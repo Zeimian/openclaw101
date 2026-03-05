@@ -65,6 +65,13 @@ export default function Navbar({ locale, dict }: NavbarProps) {
           >
             {locale === 'zh' ? '全部资源' : 'All Resources'}
           </a>
+          <a
+            href={`${prefix}/deploy-tutorial`}
+            className="text-sm transition-colors duration-200 font-medium"
+            style={{ color: '#3b82f6' }}
+          >
+            {locale === 'zh' ? '部署教程' : 'Deploy Tutorial'}
+          </a>
           
           {/* Language Switcher */}
           <LanguageSwitcher />
@@ -120,6 +127,14 @@ export default function Navbar({ locale, dict }: NavbarProps) {
             style={{ color: '#10B981' }}
           >
             {locale === 'zh' ? '全部资源 →' : 'All Resources →'}
+          </a>
+          <a
+            href={`${prefix}/deploy-tutorial`}
+            onClick={() => setMobileOpen(false)}
+            className="block py-3 transition-colors duration-200 hover:text-white font-medium"
+            style={{ color: '#3b82f6' }}
+          >
+            {locale === 'zh' ? '部署教程 →' : 'Deploy Tutorial →'}
           </a>
           
           {/* Mobile Language Switcher */}
