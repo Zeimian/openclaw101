@@ -5,8 +5,8 @@ import './globals.css';
 export const metadata: Metadata = {
   metadataBase: new URL('https://openclaw101.dev'),
   title: {
-    default: 'OpenClaw 101 - Master Your AI Assistant in 7 Days | Free Tutorial',
-    template: '%s | OpenClaw 101',
+    default: 'OpenClaw 宝珠落地 - 7 天掌握你的 AI 私人助理 | 免费教程',
+    template: '%s | OpenClaw 宝珠落地',
   },
   description: 'Free 7-day tutorial to master OpenClaw (Clawdbot/Moltbot). Learn to build your own AI personal assistant with installation guides, skills, automation, and 70+ curated resources.',
   keywords: [

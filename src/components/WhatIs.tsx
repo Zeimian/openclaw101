@@ -1,11 +1,10 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { Dictionary } from '@/lib/i18n';
 
-interface WhatIsProps {
-  locale: 'en' | 'zh';
-  dict: Dictionary;
+interface Props {
+  
+  
 }
 
 const featuresZh = [
@@ -44,9 +43,15 @@ const featuresEn = [
   },
 ];
 
-export default function WhatIs({ locale, dict }: WhatIsProps) {
+const cardStyles = [
+  { bg: 'from-blue-50 to-indigo-50', border: 'hover:border-blue-300', iconBg: 'bg-blue-100' },
+  { bg: 'from-orange-50 to-amber-50', border: 'hover:border-orange-300', iconBg: 'bg-orange-100' },
+  { bg: 'from-green-50 to-emerald-50', border: 'hover:border-green-300', iconBg: 'bg-green-100' },
+];
+
+export default function WhatIs() {
   const sectionRef = useRef<HTMLElement>(null);
-  const isZh = locale === 'zh';
+  const isZh = true;
   const features = isZh ? featuresZh : featuresEn;
 
   useEffect(() => {
@@ -68,7 +73,7 @@ export default function WhatIs({ locale, dict }: WhatIsProps) {
   }, []);
 
   return (
-    <section id="what-is" ref={sectionRef} className="py-12 sm:py-24 bg-white">
+    <section id="what-is" ref={sectionRef} className="py-12 sm:py-24 bg-white bg-confetti">
       <div className="max-w-6xl mx-auto px-4">
         {/* Section header */}
         <div className="text-center mb-8 sm:mb-16 reveal">
@@ -90,17 +95,20 @@ export default function WhatIs({ locale, dict }: WhatIsProps) {
 
         {/* Feature cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-12">
-          {features.map((f, i) => (
+          {features.map((f, i) => {
+            const s = cardStyles[i];
+            return (
             <div
               key={i}
-              className="reveal card-hover bg-gray-50 rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 border border-gray-100"
+              className={`reveal card-hover bg-gradient-to-br ${s.bg} rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 border border-gray-100 ${s.border} transition-all duration-300`}
               style={{ transitionDelay: `${i * 100}ms` }}
             >
-              <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">{f.icon}</div>
+              <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 ${s.iconBg} rounded-xl mb-3 sm:mb-4 text-3xl sm:text-4xl`}>{f.icon}</div>
               <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">{f.title}</h3>
               <p className="text-sm sm:text-base text-gray-600 leading-relaxed">{f.desc}</p>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* GitHub stars badge */}

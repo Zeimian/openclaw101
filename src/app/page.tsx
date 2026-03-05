@@ -2,45 +2,32 @@ import { Metadata } from 'next';
 import HomePage from '@/components/HomePage';
 
 export const metadata: Metadata = {
-  title: 'OpenClaw 101 - Master Your AI Assistant in 7 Days',
-  description: 'The definitive guide to building your AI assistant with OpenClaw. Tutorials, skills, and community resources for your personal AI agent.',
-  alternates: {
-    canonical: 'https://openclaw101.dev',
-    languages: {
-      'en': 'https://openclaw101.dev',
-      'zh': 'https://openclaw101.dev/zh',
-    },
-  },
+  title: 'OpenClaw 宝珠落地 - 7 天掌握你的 AI 私人助理',
+  description: 'OpenClaw 宝珠奶酪落地实战教程，7 天搭建你的 AI 私人助理，飞书集成，阿里百炼 API，完整技能生态。',
   openGraph: {
-    title: 'OpenClaw 101 - Master Your AI Assistant in 7 Days',
-    description: 'The definitive guide to building your AI assistant with OpenClaw.',
+    title: 'OpenClaw 宝珠落地 - 7 天掌握你的 AI 私人助理',
+    description: 'OpenClaw 宝珠奶酪落地实战教程',
     type: 'website',
     url: 'https://openclaw101.dev',
-    siteName: 'OpenClaw 101',
+    siteName: 'OpenClaw 宝珠落地',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'OpenClaw 101 - Master Your AI Assistant in 7 Days',
+        alt: 'OpenClaw 宝珠落地',
       },
     ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'OpenClaw 101 - Master Your AI Assistant in 7 Days',
-    description: 'The definitive guide to building your AI assistant with OpenClaw.',
-    images: ['/og-image.png'],
   },
 };
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: 'OpenClaw 101',
+  name: 'OpenClaw 宝珠落地',
   url: 'https://openclaw101.dev',
-  description: 'Master your AI personal assistant in 7 days',
-  inLanguage: 'en',
+  description: '7 天掌握你的 AI 私人助理',
+  inLanguage: 'zh-CN',
 };
 
 export default function Home() {
@@ -50,7 +37,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <HomePage locale="en" />
+      <HomePage />
     </main>
   );
 }

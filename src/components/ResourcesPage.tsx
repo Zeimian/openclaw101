@@ -281,11 +281,11 @@ function CategorySection({
 }
 
 /* ── page ── */
-export default function ResourcesPage({ locale }: ResourcesPageProps) {
+export default function ResourcesPage() {
   const [search, setSearch] = useState('');
   const mainRef = useRef<HTMLDivElement>(null);
-  const t = texts[locale];
-  const homeUrl = locale === 'zh' ? '/zh' : '/';
+  const t = texts.zh;
+  const homeUrl = '/';
 
   const searchResults = search
     ? resources.filter((r) => {
@@ -374,20 +374,20 @@ export default function ResourcesPage({ locale }: ResourcesPageProps) {
               <div className="absolute top-2 right-0 w-56 rounded-xl p-4 shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)' }}>
                 <div className="flex items-center gap-2.5 mb-2">
                   <div className="w-7 h-7 rounded-lg flex items-center justify-center text-sm" style={{ background: 'rgba(255, 106, 0, 0.2)' }}>☁️</div>
-                  <span className="text-sm font-semibold" style={{ color: '#fff' }}>{locale === 'zh' ? '阿里云' : 'Alibaba Cloud'}</span>
+                  <span className="text-sm font-semibold" style={{ color: '#fff' }}>阿里云</span>
                 </div>
                 <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                  {locale === 'zh' ? '一键部署 OpenClaw，构建钉钉 AI 助理' : 'One-click deploy OpenClaw, build DingTalk AI assistant'}
+                  一键部署 OpenClaw，构建钉钉 AI 助理
                 </p>
               </div>
 
               <div className="absolute top-20 left-0 w-52 rounded-xl p-4 shadow-2xl transform -rotate-2 hover:rotate-0 transition-transform duration-500" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)' }}>
                 <div className="flex items-center gap-2.5 mb-2">
                   <div className="w-7 h-7 rounded-lg flex items-center justify-center text-sm" style={{ background: 'rgba(0, 130, 255, 0.2)' }}>🔷</div>
-                  <span className="text-sm font-semibold" style={{ color: '#fff' }}>{locale === 'zh' ? '腾讯云' : 'Tencent Cloud'}</span>
+                  <span className="text-sm font-semibold" style={{ color: '#fff' }}>腾讯云</span>
                 </div>
                 <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                  {locale === 'zh' ? 'Lighthouse 部署 + 飞书接入教程' : 'Lighthouse deploy + Feishu integration'}
+                  Lighthouse 部署 + 飞书接入教程
                 </p>
               </div>
 
@@ -412,15 +412,15 @@ export default function ResourcesPage({ locale }: ResourcesPageProps) {
         <div className="max-w-5xl mx-auto px-4 py-4 flex flex-wrap items-center gap-2 text-xs text-gray-400">
           <span className="font-medium text-gray-500 mr-1">{t.sourcesLabel}</span>
           {[
-            { name: locale === 'zh' ? '阿里云' : 'Alibaba Cloud', color: '#ff6a00' },
-            { name: locale === 'zh' ? '腾讯云' : 'Tencent Cloud', color: '#0052d9' },
+            { name: '阿里云', color: '#ff6a00' },
+            { name: '腾讯云', color: '#0052d9' },
             { name: 'DigitalOcean', color: '#0069ff' },
             { name: 'Hostinger', color: '#6c47ff' },
             { name: 'IBM', color: '#0f62fe' },
             { name: 'Codecademy', color: '#1557ff' },
-            { name: locale === 'zh' ? 'B站' : 'Bilibili', color: '#fb7299' },
+            { name: 'B站', color: '#fb7299' },
             { name: 'MiniMax', color: '#7c3aed' },
-            { name: locale === 'zh' ? '博客园' : 'Cnblogs', color: '#3b82f6' },
+            { name: '博客园', color: '#3b82f6' },
             { name: 'CSDN', color: '#fc5531' },
             { name: 'Reddit', color: '#ff4500' },
             { name: 'Substack', color: '#ff6719' },
@@ -454,7 +454,7 @@ export default function ResourcesPage({ locale }: ResourcesPageProps) {
           </>
         ) : (
           catOrder.map((cat, i) => (
-            <CategorySection key={cat} cat={cat} index={i} locale={locale} t={t} />
+            <CategorySection key={cat} cat={cat} index={i} locale="zh" t={t} />
           ))
         )}
 
@@ -492,7 +492,7 @@ export default function ResourcesPage({ locale }: ResourcesPageProps) {
       </footer>
 
       {/* Floating consult button */}
-      <ConsultButton locale={locale} />
+      <ConsultButton />
     </div>
   );
 }

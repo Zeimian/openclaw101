@@ -2,22 +2,32 @@
 
 import { useEffect, useRef } from 'react';
 import { getFeaturedResources, categoryMeta, stats, type Resource } from '@/data/resources';
-import { Dictionary } from '@/lib/i18n';
 
-interface ResourcesSectionProps {
-  locale: 'en' | 'zh';
-  dict: Dictionary;
+interface Props {
+  
+  
 }
 
 const colorMap: Record<string, string> = {
-  blue: 'border-blue-200 bg-blue-50 text-blue-700',
-  green: 'border-green-200 bg-green-50 text-green-700',
-  purple: 'border-purple-200 bg-purple-50 text-purple-700',
-  orange: 'border-orange-200 bg-orange-50 text-orange-700',
-  red: 'border-red-200 bg-red-50 text-red-700',
-  indigo: 'border-indigo-200 bg-indigo-50 text-indigo-700',
-  teal: 'border-teal-200 bg-teal-50 text-teal-700',
-  sky: 'border-sky-200 bg-sky-50 text-sky-700',
+  blue: 'border-blue-300 bg-blue-100 text-blue-700',
+  green: 'border-green-300 bg-green-100 text-green-700',
+  purple: 'border-purple-300 bg-purple-100 text-purple-700',
+  orange: 'border-orange-300 bg-orange-100 text-orange-700',
+  red: 'border-red-300 bg-red-100 text-red-700',
+  indigo: 'border-indigo-300 bg-indigo-100 text-indigo-700',
+  teal: 'border-teal-300 bg-teal-100 text-teal-700',
+  sky: 'border-sky-300 bg-sky-100 text-sky-700',
+};
+
+const leftBorderMap: Record<string, string> = {
+  blue: 'border-l-4 border-l-blue-400',
+  green: 'border-l-4 border-l-green-400',
+  purple: 'border-l-4 border-l-purple-400',
+  orange: 'border-l-4 border-l-orange-400',
+  red: 'border-l-4 border-l-red-400',
+  indigo: 'border-l-4 border-l-indigo-400',
+  teal: 'border-l-4 border-l-teal-400',
+  sky: 'border-l-4 border-l-sky-400',
 };
 
 function ResourceCard({ r, i, isZh }: { r: Resource; i: number; isZh: boolean }) {
@@ -27,7 +37,7 @@ function ResourceCard({ r, i, isZh }: { r: Resource; i: number; isZh: boolean })
       href={r.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="reveal card-hover group block bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 border border-gray-100 hover:border-gray-200 relative"
+      className={`reveal card-hover group block bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 border border-gray-100 hover:border-gray-200 relative ${leftBorderMap[meta.color] || leftBorderMap.blue}`}
       style={{ transitionDelay: `${i * 60}ms` }}
     >
       {/* Lang badge */}
@@ -57,11 +67,11 @@ function ResourceCard({ r, i, isZh }: { r: Resource; i: number; isZh: boolean })
   );
 }
 
-export default function ResourcesSection({ locale, dict }: ResourcesSectionProps) {
+export default function ResourcesSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const featured = getFeaturedResources();
-  const isZh = locale === 'zh';
-  const prefix = locale === 'en' ? '' : `/${locale}`;
+  const isZh = true;
+
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -82,7 +92,7 @@ export default function ResourcesSection({ locale, dict }: ResourcesSectionProps
   }, []);
 
   return (
-    <section id="resources" ref={sectionRef} className="py-12 sm:py-24 bg-gray-50">
+    <section id="resources" ref={sectionRef} className="py-12 sm:py-24 bg-gray-50 bg-dots">
       <div className="max-w-6xl mx-auto px-4">
         {/* Section header */}
         <div className="text-center mb-6 reveal">
@@ -158,15 +168,15 @@ export default function ResourcesSection({ locale, dict }: ResourcesSectionProps
         {/* CTA */}
         <div className="text-center reveal">
           <a
-            href={`${prefix}/resources`}
-            className="group inline-flex items-center gap-2 px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+            href="/resources"
+            className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-tech hover:opacity-90 text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
           >
             {isZh ? `查看全部 ${stats.totalResources}+ 篇资源` : `View All ${stats.totalResources}+ Resources`}
             <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
           </a>
           <p className="text-gray-500 text-sm mt-3">
             {isZh ? '持续更新中 · ' : 'Continuously updated · '}
-            <a href="https://github.com/mengjian-github/openclaw101" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+            <a href="https://github.com/Zeimian/openclaw101" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
               {isZh ? '欢迎提交 PR 补充资源' : 'PRs welcome'}
             </a>
           </p>

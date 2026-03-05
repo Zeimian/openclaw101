@@ -2,13 +2,9 @@
 
 import { useState } from 'react';
 
-interface ConsultButtonProps {
-  locale: 'en' | 'zh';
-}
-
-export default function ConsultButton({ locale }: ConsultButtonProps) {
+export default function ConsultButton() {
   const [isOpen, setIsOpen] = useState(false);
-  const isZh = locale === 'zh';
+  const isZh = true;
 
   return (
     <>

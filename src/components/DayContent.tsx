@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 
-interface DayContentProps {
+interface Props {
   day: number;
   content: string;
   frontmatter: {
@@ -15,10 +15,9 @@ interface DayContentProps {
   };
   prevDay: number | null;
   nextDay: number | null;
-  locale: 'en' | 'zh';
 }
 
-export default function DayContent({ day, content, frontmatter, prevDay, nextDay, locale }: DayContentProps) {
+export default function DayContent({ day, content, frontmatter, prevDay, nextDay }: Props) {
   const [mounted, setMounted] = useState(false);
   
   useEffect(() => {
@@ -35,7 +34,7 @@ export default function DayContent({ day, content, frontmatter, prevDay, nextDay
     7: { en: 'Advanced Techniques', zh: '高级技巧' },
   };
   
-  const t = locale === 'zh' ? {
+  const t = {
     day: '第',
     dayUnit: '天',
     prev: '上一天',
@@ -43,14 +42,6 @@ export default function DayContent({ day, content, frontmatter, prevDay, nextDay
     backToHome: '返回首页',
     readingTime: '阅读时间约',
     minutes: '分钟',
-  } : {
-    day: 'Day',
-    dayUnit: '',
-    prev: 'Previous Day',
-    next: 'Next Day',
-    backToHome: 'Back to Home',
-    readingTime: 'Reading time:',
-    minutes: 'min',
   };
   
   // Estimate reading time (Chinese: ~400 chars/min, English: ~200 words/min)
@@ -62,7 +53,7 @@ export default function DayContent({ day, content, frontmatter, prevDay, nextDay
       {/* Header */}
       <header className="border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href={locale === 'zh' ? '/zh' : '/'} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+          <Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
             <span>←</span>
             <span>{t.backToHome}</span>
           </Link>
@@ -84,10 +75,10 @@ export default function DayContent({ day, content, frontmatter, prevDay, nextDay
       <div className="bg-gradient-to-b from-gray-800 to-gray-900 py-16">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <span className="inline-block px-4 py-2 bg-blue-500/20 text-blue-400 rounded-full text-sm font-medium mb-4">
-            {locale === 'zh' ? `${t.day} ${day} ${t.dayUnit}` : `${t.day} ${day}`}
+            {`${t.day} ${day} ${t.dayUnit}`}
           </span>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            {titles[day]?.[locale] || frontmatter.title}
+            {titles[day]?.zh || frontmatter.title}
           </h1>
           <p className="text-xl text-gray-400">
             {frontmatter.description}
@@ -237,7 +228,7 @@ export default function DayContent({ day, content, frontmatter, prevDay, nextDay
           <div className="flex flex-col sm:flex-row gap-3 sm:justify-between">
             {prevDay ? (
               <Link 
-                href={`${locale === 'zh' ? '/zh' : ''}/day/${prevDay}`}
+                href={`/day/${prevDay}`}
                 className="flex items-center justify-center gap-2 px-5 py-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors text-sm sm:text-base"
               >
                 <span>←</span>
@@ -249,7 +240,7 @@ export default function DayContent({ day, content, frontmatter, prevDay, nextDay
             
             {nextDay ? (
               <Link 
-                href={`${locale === 'zh' ? '/zh' : ''}/day/${nextDay}`}
+                href={`/day/${nextDay}`}
                 className="flex items-center justify-center gap-2 px-5 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors text-sm sm:text-base font-medium"
               >
                 <span className="whitespace-nowrap">{t.next}</span>
@@ -257,10 +248,10 @@ export default function DayContent({ day, content, frontmatter, prevDay, nextDay
               </Link>
             ) : (
               <Link 
-                href={locale === 'zh' ? '/zh' : '/'}
+                href="/"
                 className="flex items-center justify-center gap-2 px-5 py-3 bg-green-600 hover:bg-green-500 rounded-lg transition-colors text-sm sm:text-base font-medium"
               >
-                <span>🎉 {locale === 'zh' ? '完成！返回首页' : 'Done! Back Home'}</span>
+                <span>🎉 完成！返回首页</span>
               </Link>
             )}
           </div>

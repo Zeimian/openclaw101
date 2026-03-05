@@ -1,25 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import LanguageSwitcher from './LanguageSwitcher';
-import { Dictionary } from '@/lib/i18n';
 
-interface NavbarProps {
-  locale: 'en' | 'zh';
-  dict: Dictionary;
-}
-
-export default function Navbar({ locale, dict }: NavbarProps) {
+export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const prefix = locale === 'en' ? '' : `/${locale}`;
-
   const links = [
-    { label: dict.nav.learn, href: '#what-is' },
-    { label: dict.nav.skills, href: '#skills' },
-    { label: dict.nav.resources, href: '#resources' },
-    { label: dict.nav.community, href: '#community' },
+    { label: '什么是 OpenClaw', href: '#what-is' },
+    { label: '技能生态', href: '#skills' },
+    { label: '资源聚合', href: '#resources' },
+    { label: '社区与贡献', href: '#community' },
   ];
 
   useEffect(() => {
@@ -32,18 +23,21 @@ export default function Navbar({ locale, dict }: NavbarProps) {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'backdrop-blur-md border-b border-white/10 py-3'
+          ? 'backdrop-blur-md py-3'
           : 'py-4 sm:py-5'
       }`}
       style={{
         backgroundColor: scrolled ? 'rgba(15, 23, 42, 0.9)' : 'transparent',
         paddingTop: scrolled ? 'calc(env(safe-area-inset-top) + 0.75rem)' : 'calc(env(safe-area-inset-top) + 1rem)',
+        borderBottom: scrolled ? 'none' : 'none',
       }}
     >
+      {/* Gradient bottom line when scrolled */}
+      {scrolled && <div className="absolute bottom-0 left-0 right-0 divider-gradient" />}
       <div className="max-w-6xl mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
-        <a href={prefix || '/'} className="font-bold text-base sm:text-lg whitespace-nowrap" style={{ color: '#fff' }}>
-          🐾 <span className="gradient-text">OpenClaw</span> 101
+        <a href="/" className="font-bold text-base sm:text-lg whitespace-nowrap" style={{ color: '#fff' }}>
+          🐾 <span className="gradient-text-vivid">OpenClaw</span> 101
         </a>
 
         {/* Desktop links */}
@@ -59,28 +53,25 @@ export default function Navbar({ locale, dict }: NavbarProps) {
             </a>
           ))}
           <a
-            href={`${prefix}/resources`}
+            href="/resources"
             className="text-sm transition-colors duration-200 font-medium"
             style={{ color: '#10B981' }}
           >
-            {locale === 'zh' ? '全部资源' : 'All Resources'}
+            全部资源
           </a>
           <a
-            href={`${prefix}/deploy-tutorial`}
+            href="/deploy-tutorial"
             className="text-sm transition-colors duration-200 font-medium"
             style={{ color: '#3b82f6' }}
           >
-            {locale === 'zh' ? '部署教程' : 'Deploy Tutorial'}
+            部署教程
           </a>
           
-          {/* Language Switcher */}
-          <LanguageSwitcher />
-          
           <a
-            href="https://github.com/mengjian-github/openclaw101"
+            href="https://github.com/Zeimian/openclaw101"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors duration-200"
+            className="text-sm px-4 py-2 bg-white/10 hover:bg-gradient-to-r hover:from-primary/20 hover:to-tech/20 rounded-lg transition-all duration-200"
             style={{ color: '#fff' }}
           >
             ⭐ GitHub
@@ -121,29 +112,24 @@ export default function Navbar({ locale, dict }: NavbarProps) {
             </a>
           ))}
           <a
-            href={`${prefix}/resources`}
+            href="/resources"
             onClick={() => setMobileOpen(false)}
             className="block py-3 transition-colors duration-200 hover:text-white font-medium"
             style={{ color: '#10B981' }}
           >
-            {locale === 'zh' ? '全部资源 →' : 'All Resources →'}
+            全部资源 →
           </a>
           <a
-            href={`${prefix}/deploy-tutorial`}
+            href="/deploy-tutorial"
             onClick={() => setMobileOpen(false)}
             className="block py-3 transition-colors duration-200 hover:text-white font-medium"
             style={{ color: '#3b82f6' }}
           >
-            {locale === 'zh' ? '部署教程 →' : 'Deploy Tutorial →'}
+            部署教程 →
           </a>
           
-          {/* Mobile Language Switcher */}
-          <div className="py-3 border-t border-white/10 mt-2">
-            <LanguageSwitcher />
-          </div>
-          
           <a
-            href="https://github.com/mengjian-github/openclaw101"
+            href="https://github.com/Zeimian/openclaw101"
             target="_blank"
             rel="noopener noreferrer"
             className="block py-3 transition-colors duration-200 hover:text-white"

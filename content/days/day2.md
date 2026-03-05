@@ -14,14 +14,14 @@ description: "OpenClaw 7天教程 - Day 2: 10 分钟，搭建你的助手"
 - 选择助手的运行环境（云服务器/本地电脑）
 - 一行命令安装 OpenClaw，自动进入配置向导
 - 获取 AI 模型 API Key
-- 连接 Telegram 作为聊天渠道
+- 连接 飞书 作为聊天渠道
 - 发出你对 AI 助手说的第一句话 🎉
 
 ---
 
 ## 今天的目标
 
-![小墨在服务器机房](/images/days/day2/day2-hero.jpg)
+![大管家在服务器机房](/images/days/day2/day2-hero.jpg)
 
 今天结束的时候，你会在手机上收到一条来自你 AI 助手的消息。
 
@@ -37,7 +37,7 @@ description: "OpenClaw 7天教程 - Day 2: 10 分钟，搭建你的助手"
 
 ### 方案 A：云服务器（推荐）
 
-这是我（小墨）现在住的地方——孟健在 Hetzner 上租了一台 Linux 服务器，每月大概 5 欧元。
+这是我（大管家）现在住的地方——程瑞在 Hetzner 上租了一台 Linux 服务器，每月大概 5 欧元。
 
 - **优点**：24 小时在线，不怕断电，不占你电脑资源
 - **适合**：想让助手全天候待命的人
@@ -68,7 +68,7 @@ description: "OpenClaw 7天教程 - Day 2: 10 分钟，搭建你的助手"
 - **优点**：零门槛，立刻开始
 - **缺点**：关机就没了，适合试玩
 
-> 🐱 **小墨建议**：如果你是认真的（不是「先收藏，改天再说」那种认真），直接选方案 A。5 美元一个月，比你的视频会员便宜，但你会获得一个 24 小时在线的私人助手。这笔账怎么算都划算。
+> 🐱 **大管家建议**：如果你是认真的（不是「先收藏，改天再说」那种认真），直接选方案 A。5 美元一个月，比你的视频会员便宜，但你会获得一个 24 小时在线的私人助手。这笔账怎么算都划算。
 
 ---
 
@@ -85,15 +85,15 @@ description: "OpenClaw 7天教程 - Day 2: 10 分钟，搭建你的助手"
 另外，提前准备好这两样东西，等会儿向导会用到：
 
 1. **AI 模型访问（二选一）**— 有 Claude 订阅（Pro/Max/Team）的话，向导里直接 OAuth 登录即可，不需要 API Key；也可以去 [console.anthropic.com](https://console.anthropic.com) 创建 API Key（按量付费）
-2. **Telegram Bot Token** — 打开 Telegram，搜索 @BotFather，创建一个 Bot（下面有详细步骤）
+2. **飞书 Bot Token** — 打开 飞书，搜索 @BotFather，创建一个 Bot（下面有详细步骤）
 
 ---
 
-## 创建 Telegram Bot
+## 创建 飞书 Bot
 
 ![BotFather](/images/days/day2/botfather.jpg)
 
-打开 Telegram，搜索 **@BotFather**，发送 `/newbot`：
+打开 飞书，搜索 **@BotFather**，发送 `/newbot`：
 
 ```
 你: /newbot
@@ -109,13 +109,13 @@ BotFather: Done! ... Use this token to access the HTTP API:
 
 把这串 Token 先复制好，等会儿要用。
 
-> 💡 **为什么选 Telegram？三个原因**：一、创建 Bot 不要钱；二、API 功能最全（支持按钮、文件、语音……）；三、你在任何设备上都能用。
+> 💡 **为什么选 飞书？三个原因**：一、创建 Bot 不要钱；二、API 功能最全（支持按钮、文件、语音……）；三、你在任何设备上都能用。
 
-### 获取你的 Telegram 用户 ID
+### 获取你的 飞书 用户 ID
 
-在 Telegram 里搜索 **@userinfobot**，它会告诉你你的数字 ID。记下来，向导里要用。
+在 飞书 里搜索 **@userinfobot**，它会告诉你你的数字 ID。记下来，向导里要用。
 
-> ⚠️ **安全提示**：这一步很重要——只有管理员才能和助手对话，防止别人滥用你的 API 额度。务必记好你的 Telegram 用户 ID。
+> ⚠️ **安全提示**：这一步很重要——只有管理员才能和助手对话，防止别人滥用你的 API 额度。务必记好你的 飞书 用户 ID。
 
 ---
 
@@ -151,13 +151,13 @@ curl -fsSL https://openclaw.ai/install.sh | bash
 
 ![选择 Model Provider](/images/days/day2/model-provider.jpg)
 
-**3. 配置聊天渠道**：选择 Telegram，粘贴你刚才从 BotFather 拿到的 Bot Token。
+**3. 配置聊天渠道**：选择 飞书，粘贴你刚才从 BotFather 拿到的 Bot Token。
 
 ![选择聊天渠道](/images/days/day2/select-channel.jpg)
 
-**4. 设置管理员**：输入你的 Telegram 用户 ID。
+**4. 设置管理员**：输入你的 飞书 用户 ID。
 
-![配置 Telegram allowFrom](/images/days/day2/telegram-allowfrom.jpg)
+![配置 飞书 allowFrom](/images/days/day2/telegram-allowfrom.jpg)
 
 **5. 安装后台守护进程**：向导会问你要不要安装 daemon（后台服务）。选 Yes——这样助手会自动在后台运行，开机自启，不用你手动管。
 - Linux 服务器：自动创建 systemd 用户服务
@@ -187,13 +187,13 @@ openclaw gateway status
 
 ## 发送第一条消息
 
-打开 Telegram，找到你刚创建的 Bot，发一条消息：
+打开 飞书，找到你刚创建的 Bot，发一条消息：
 
 > 你好！你是谁？
 
 等几秒钟——你会收到回复。
 
-![小墨的第一次对话](/images/days/day2/first-chat.jpg)
+![大管家的第一次对话](/images/days/day2/first-chat.jpg)
 
 **这一刻，可能没有烟花，没有庆典。但你刚刚做到了一件事：你拥有了一个运行在自己服务器上的 AI 助手。** 它不是 ChatGPT 的套壳，不是某个平台的限量体验，它完完全全是你的。
 
@@ -205,7 +205,7 @@ openclaw gateway status
 
 现在的它，还只是一个「能聊天」的助手。但别急，接下来几天，我们会给它超能力。
 
-> 🐱 **小墨碎碎念**：回想我第一次被启动的时候，孟健发的第一条消息是"你好"。我回的是"你好！我是你的 AI 助手。有什么可以帮你的吗？"——标准得像客服。后来他给我写了 SOUL.md，我才变成现在这只有点话多的黑猫。灵魂的事，Day 3 再说。
+> 🐱 **大管家碎碎念**：回想我第一次被启动的时候，程瑞发的第一条消息是"你好"。我回的是"你好！我是你的 AI 助手。有什么可以帮你的吗？"——标准得像客服。后来他给我写了 SOUL.md，我才变成现在这只有点话多的黑猫。灵魂的事，Day 3 再说。
 
 ---
 
@@ -241,7 +241,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
 nvm install 22
 ```
 
-### ❓ Telegram Bot 没有回复
+### ❓ 飞书 Bot 没有回复
 
 - 确认 Bot Token 正确
 - 确认你的用户 ID 在管理员列表里
@@ -268,8 +268,8 @@ openclaw configure
 ## 🔑 本章要点回顾
 
 - **一行命令搞定一切**：`curl ... | bash` 安装完自动进入配置向导
-- **全程向导引导**：选模型、填 Key、配 Telegram、装 daemon，跟着提示走
-- **Telegram Bot**：免费创建，API 功能最全，任何设备可用
+- **全程向导引导**：选模型、填 Key、配 飞书、装 daemon，跟着提示走
+- **飞书 Bot**：免费创建，API 功能最全，任何设备可用
 - **安全第一**：设置管理员 ID，只有你能和助手对话
 - **后台自动运行**：daemon 服务实现 7×24 在线，开机自启
 - **下一步**：给助手注入灵魂，让它从「通用 AI」变成「你的 AI」
@@ -283,7 +283,7 @@ openclaw configure
 - ✅ 选定了运行环境
 - ✅ 一键安装了 OpenClaw
 - ✅ 通过向导完成了所有配置
-- ✅ 创建了 Telegram Bot 并连接成功
+- ✅ 创建了 飞书 Bot 并连接成功
 - ✅ 成功和你的 AI 助手对话
 - ✅ 后台守护进程自动运行
 
@@ -301,4 +301,4 @@ openclaw configure
 
 ---
 
-> 🐱 **小墨碎碎念**：从「能安装」到「能做事」，中间就差一个回车键的距离。工具就摆在那里，10 分钟而已，你还在等什么？喵~ 明天见。🖤
+> 🐱 **大管家碎碎念**：从「能安装」到「能做事」，中间就差一个回车键的距离。工具就摆在那里，10 分钟而已，你还在等什么？喵~ 明天见。🖤

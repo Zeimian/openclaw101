@@ -5,9 +5,8 @@ interface FooterProps {
   dict: Dictionary;
 }
 
-export default function Footer({ locale, dict }: FooterProps) {
-  const isZh = locale === 'zh';
-  const prefix = locale === 'en' ? '' : `/${locale}`;
+export default function Footer() {
+  const isZh = true;
 
   return (
     <footer className="hero-glow py-6 sm:py-12">
@@ -31,7 +30,7 @@ export default function Footer({ locale, dict }: FooterProps) {
             </h4>
             <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
               <li><a href="#getting-started" className="hover:text-white transition-colors">{isZh ? '7天学习路径' : '7-Day Path'}</a></li>
-              <li><a href={`${prefix}/resources`} className="hover:text-white transition-colors">{isZh ? '全部资源' : 'All Resources'}</a></li>
+              <li><a href="/resources" className="hover:text-white transition-colors">全部资源</a></li>
               <li><a href="https://my.feishu.cn/wiki/YkWgwqSchi9xW3kEuZscAm0lnFf" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">{isZh ? '飞书知识库' : 'Feishu Wiki'}</a></li>
               <li><a href="#skills" className="hover:text-white transition-colors">{isZh ? '技能推荐' : 'Featured Skills'}</a></li>
             </ul>

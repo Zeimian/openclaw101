@@ -98,10 +98,10 @@ const itemsEn = [
   },
 ];
 
-export default function Community({ locale, dict }: CommunityProps) {
+export default function Community() {
   const sectionRef = useRef<HTMLElement>(null);
-  const isZh = locale === 'zh';
-  const items = isZh ? itemsZh : itemsEn;
+  const isZh = true;
+  const items = itemsZh;
 
   useEffect(() => {
     const observer = new IntersectionObserver(

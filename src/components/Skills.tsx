@@ -1,11 +1,10 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { Dictionary } from '@/lib/i18n';
 
-interface SkillsProps {
-  locale: 'en' | 'zh';
-  dict: Dictionary;
+interface Props {
+  
+  
 }
 
 // Featured skills with actual links from awesome-openclaw-skills
@@ -303,9 +302,9 @@ const featuredSkillsZh = [
   },
 ];
 
-export default function Skills({ locale, dict }: SkillsProps) {
+export default function Skills() {
   const sectionRef = useRef<HTMLElement>(null);
-  const isZh = locale === 'zh';
+  const isZh = true;
   const categories = isZh ? featuredSkillsZh : featuredSkillsEn;
 
   useEffect(() => {
@@ -327,7 +326,7 @@ export default function Skills({ locale, dict }: SkillsProps) {
   }, []);
 
   return (
-    <section id="skills" ref={sectionRef} className="py-12 sm:py-24 bg-white">
+    <section id="skills" ref={sectionRef} className="py-12 sm:py-24 bg-white bg-confetti">
       <div className="max-w-7xl mx-auto px-4">
         {/* Section header */}
         <div className="text-center mb-8 sm:mb-12 reveal">
@@ -353,15 +352,17 @@ export default function Skills({ locale, dict }: SkillsProps) {
           {categories.map((cat, i) => (
             <div
               key={i}
-              className="reveal card-hover bg-gray-50 rounded-xl p-4 sm:p-5 border border-gray-100 hover:border-primary/20 transition-all duration-300"
+              className="reveal card-hover bg-gray-50 rounded-xl p-4 sm:p-5 border border-gray-100 hover:border-primary/20 transition-all duration-300 relative overflow-hidden"
               style={{ transitionDelay: `${i * 50}ms` }}
             >
+              {/* Gradient top bar */}
+              <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${cat.color}`} />
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-xl">{cat.icon}</span>
+                  <span className={`inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br ${cat.color} text-white text-lg`}>{cat.icon}</span>
                   <h3 className="text-sm sm:text-base font-bold text-gray-900">{cat.title}</h3>
                 </div>
-                <span className="text-xs font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                <span className={`text-xs font-medium text-white bg-gradient-to-r ${cat.color} px-2 py-0.5 rounded-full`}>
                   {cat.count}
                 </span>
               </div>
@@ -388,7 +389,7 @@ export default function Skills({ locale, dict }: SkillsProps) {
         </div>
 
         {/* Stats bar */}
-        <div className="reveal bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-8">
+        <div className="reveal bg-gradient-to-r from-pink-50 via-blue-50 to-amber-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-8">
           <div className="grid grid-cols-2 gap-3 sm:gap-4 text-center">
             <div className="bg-white/60 rounded-lg p-3 sm:p-4">
               <div className="text-xl sm:text-3xl font-bold text-primary">1715+</div>
@@ -410,7 +411,7 @@ export default function Skills({ locale, dict }: SkillsProps) {
         </div>
 
         {/* Install instruction */}
-        <div className="reveal bg-gray-900 rounded-xl p-4 sm:p-6 mb-8">
+        <div className="reveal bg-gray-900 rounded-xl p-4 sm:p-6 mb-8 border-l-4 border-green-400">
           <div className="flex flex-col gap-3 sm:gap-4">
             <div>
               <h4 className="text-white font-semibold mb-1">
