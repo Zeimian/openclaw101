@@ -17,202 +17,192 @@ interface Props {
   nextDay: number | null;
 }
 
+const dayColors: Record<number, { gradient: string; badge: string }> = {
+  1: { gradient: 'from-day-1 to-pink-400', badge: 'bg-day-1' },
+  2: { gradient: 'from-day-2 to-blue-400', badge: 'bg-day-2' },
+  3: { gradient: 'from-day-3 to-green-400', badge: 'bg-day-3' },
+  4: { gradient: 'from-day-4 to-amber-400', badge: 'bg-day-4' },
+  5: { gradient: 'from-day-5 to-purple-400', badge: 'bg-day-5' },
+  6: { gradient: 'from-day-6 to-cyan-400', badge: 'bg-day-6' },
+  7: { gradient: 'from-day-7 to-yellow-400', badge: 'bg-day-7' },
+};
+
 export default function DayContent({ day, content, frontmatter, prevDay, nextDay }: Props) {
   const [mounted, setMounted] = useState(false);
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-  
-  const titles: Record<number, { en: string; zh: string }> = {
-    1: { en: 'Getting Started with OpenClaw', zh: '初识 OpenClaw' },
-    2: { en: 'Deep Conversations', zh: '深入对话' },
-    3: { en: 'Files & Code', zh: '文件与代码' },
-    4: { en: 'Web Capabilities', zh: '网络能力' },
-    5: { en: 'Skill Extensions', zh: '技能扩展' },
-    6: { en: 'Automation', zh: '自动化' },
-    7: { en: 'Advanced Techniques', zh: '高级技巧' },
+  useEffect(() => { setMounted(true); }, []);
+
+  const titles: Record<number, string> = {
+    1: '初识 OpenClaw', 2: '深入对话', 3: '文件与代码',
+    4: '网络能力', 5: '技能扩展', 6: '自动化', 7: '高级技巧',
   };
-  
-  const t = {
-    day: '第',
-    dayUnit: '天',
-    prev: '上一天',
-    next: '下一天',
-    backToHome: '返回首页',
-    readingTime: '阅读时间约',
-    minutes: '分钟',
-  };
-  
-  // Estimate reading time (Chinese: ~400 chars/min, English: ~200 words/min)
-  const charCount = content.length;
-  const readingTime = Math.max(1, Math.ceil(charCount / 400));
-  
+
+  const readingTime = Math.max(1, Math.ceil(content.length / 400));
+  const colors = dayColors[day] || dayColors[1];
+
   return (
-    <div className={`transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
-      {/* Header */}
-      <header className="border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
-            <span>←</span>
-            <span>{t.backToHome}</span>
+    <div className={`min-h-screen transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}
+      style={{ backgroundColor: '#0d1117' }}>
+
+      {/* Sticky header */}
+      <header className="sticky top-0 z-50 backdrop-blur-md border-b"
+        style={{ backgroundColor: 'rgba(13,17,23,0.85)', borderColor: 'rgba(255,255,255,0.06)' }}>
+        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 transition-colors text-sm"
+            style={{ color: 'rgba(255,255,255,0.5)' }}>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span className="hover:text-white">返回首页</span>
           </Link>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500">{t.readingTime} {readingTime} {t.minutes}</span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>约 {readingTime} 分钟</span>
+            <span className={`text-xs font-bold text-white ${colors.badge} px-2 py-0.5 rounded-full`}>
+              DAY {day}
+            </span>
           </div>
         </div>
+        <div className="h-0.5" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}>
+          <div className={`h-full bg-gradient-to-r ${colors.gradient} transition-all duration-500`}
+            style={{ width: `${(day / 7) * 100}%` }} />
+        </div>
       </header>
-      
-      {/* Progress bar */}
-      <div className="h-1 bg-gray-800">
-        <div 
-          className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300"
-          style={{ width: `${(day / 7) * 100}%` }}
-        />
-      </div>
-      
+
       {/* Hero */}
-      <div className="bg-gradient-to-b from-gray-800 to-gray-900 py-16">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <span className="inline-block px-4 py-2 bg-blue-500/20 text-blue-400 rounded-full text-sm font-medium mb-4">
-            {`${t.day} ${day} ${t.dayUnit}`}
-          </span>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            {titles[day]?.zh || frontmatter.title}
+      <div className="hero-glow-vivid relative overflow-hidden">
+        <div className="absolute top-10 left-10 w-40 h-40 rounded-full blur-3xl animate-float opacity-40"
+          style={{ background: 'rgba(255,107,157,0.2)' }} />
+        <div className="absolute bottom-10 right-10 w-56 h-56 rounded-full blur-3xl animate-float opacity-30"
+          style={{ background: 'rgba(0,102,255,0.15)', animationDelay: '2s' }} />
+        <div className="relative max-w-4xl mx-auto px-4 py-14 sm:py-20 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm mb-5">
+            <span className="text-sm">📅</span>
+            <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>
+              第 {day} 天 · 共 7 天
+            </span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
+            {titles[day] || frontmatter.title}
           </h1>
-          <p className="text-xl text-gray-400">
+          <p className="text-base sm:text-lg max-w-xl mx-auto" style={{ color: 'rgba(255,255,255,0.55)' }}>
             {frontmatter.description}
           </p>
         </div>
       </div>
-      
-      {/* Content */}
-      <article className="max-w-4xl mx-auto px-4 py-12">
-        <div className="markdown-body">
+
+      {/* Article */}
+      <article className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+        <div>
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeRaw]}
             components={{
-              // Headers
               h1: ({ children }) => (
-                <h1 className="text-3xl font-bold text-white mt-12 mb-6">{children}</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-white mt-14 mb-5">{children}</h1>
               ),
               h2: ({ children }) => (
-                <h2 className="text-2xl font-bold text-white mt-12 mb-6 pb-2 border-b border-gray-700">{children}</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-white mt-12 mb-5 pb-3"
+                  style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>{children}</h2>
               ),
               h3: ({ children }) => (
-                <h3 className="text-xl font-semibold text-white mt-10 mb-4">{children}</h3>
+                <h3 className="text-lg sm:text-xl font-semibold mt-10 mb-3"
+                  style={{ color: 'rgba(255,255,255,0.9)' }}>{children}</h3>
               ),
               h4: ({ children }) => (
-                <h4 className="text-lg font-semibold text-white mt-8 mb-4">{children}</h4>
+                <h4 className="text-base sm:text-lg font-semibold mt-8 mb-3"
+                  style={{ color: 'rgba(255,255,255,0.85)' }}>{children}</h4>
               ),
-              
-              // Paragraphs
               p: ({ children }) => (
-                <p className="text-gray-300 leading-relaxed mb-4">{children}</p>
+                <p className="text-[15px] sm:text-base leading-[1.9] mb-5"
+                  style={{ color: 'rgba(255,255,255,0.65)' }}>{children}</p>
               ),
-              
-              // Strong & emphasis
               strong: ({ children }) => (
-                <strong className="text-white font-semibold">{children}</strong>
+                <strong className="font-semibold" style={{ color: 'rgba(255,255,255,0.95)' }}>{children}</strong>
               ),
               em: ({ children }) => (
-                <em className="text-gray-300">{children}</em>
+                <em className="not-italic" style={{ color: 'rgba(255,255,255,0.7)', borderBottom: '1px dashed rgba(255,255,255,0.2)' }}>{children}</em>
               ),
-              
-              // Links
               a: ({ href, children }) => (
-                <a 
-                  href={href} 
-                  className="text-blue-400 hover:text-blue-300 underline" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
+                <a href={href} className="text-blue-400 hover:text-blue-300 underline decoration-blue-500/30 underline-offset-2 transition-colors" target="_blank" rel="noopener noreferrer">
                   {children}
                 </a>
               ),
-              
-              // Lists
               ul: ({ children }) => (
-                <ul className="my-4 ml-6 list-disc text-gray-300 space-y-2">{children}</ul>
+                <ul className="my-4 ml-5 space-y-2.5 text-[15px] sm:text-base list-disc" style={{ color: 'rgba(255,255,255,0.65)' }}>{children}</ul>
               ),
               ol: ({ children }) => (
-                <ol className="my-4 ml-6 list-decimal text-gray-300 space-y-2">{children}</ol>
+                <ol className="my-4 ml-5 space-y-2.5 text-[15px] sm:text-base list-decimal" style={{ color: 'rgba(255,255,255,0.65)' }}>{children}</ol>
               ),
               li: ({ children }) => (
-                <li className="text-gray-300">{children}</li>
+                <li className="leading-[1.9] pl-1" style={{ color: 'rgba(255,255,255,0.65)' }}>{children}</li>
               ),
-              
-              // Code
               code: ({ className, children }) => {
                 const isBlock = className?.includes('language-');
                 if (isBlock) {
-                  return (
-                    <code className={`${className} block text-gray-200 font-mono text-sm leading-relaxed`}>{children}</code>
-                  );
+                  return <code className={`${className} block font-mono text-sm leading-relaxed`}
+                    style={{ color: 'rgba(255,255,255,0.85)' }}>{children}</code>;
                 }
                 return (
-                  <code className="bg-slate-700 px-1.5 py-0.5 rounded text-emerald-400 text-sm font-mono border border-slate-600">
+                  <code className="px-1.5 py-0.5 rounded text-sm font-mono"
+                    style={{ backgroundColor: 'rgba(255,255,255,0.08)', color: '#7ee787', border: '1px solid rgba(255,255,255,0.06)' }}>
                     {children}
                   </code>
                 );
               },
               pre: ({ children }) => (
-                <pre className="bg-slate-900 border border-slate-700 rounded-xl p-5 overflow-x-auto my-6 text-sm shadow-lg">
+                <pre className="rounded-xl p-5 overflow-x-auto my-6 text-sm"
+                  style={{ backgroundColor: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}>
                   {children}
                 </pre>
               ),
-              
-              // Blockquotes (callouts)
               blockquote: ({ children }) => (
-                <blockquote className="border-l-4 border-blue-500/50 bg-blue-900/20 pl-4 pr-4 py-3 my-4 rounded-r-lg text-gray-300">
+                <blockquote className="pl-5 pr-5 py-4 my-6 rounded-r-xl [&>p]:mb-1 [&>p]:text-[14px] [&>p]:leading-[1.8]"
+                  style={{ borderLeft: '3px solid rgba(96,165,250,0.5)', backgroundColor: 'rgba(96,165,250,0.06)', color: 'rgba(255,255,255,0.7)' }}>
                   {children}
                 </blockquote>
               ),
-              
-              // Tables
               table: ({ children }) => (
-                <div className="overflow-x-auto my-6">
-                  <table className="w-full border-collapse border border-gray-700 rounded-lg overflow-hidden">
-                    {children}
-                  </table>
+                <div className="overflow-x-auto my-6 rounded-xl"
+                  style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <table className="w-full border-collapse text-sm">{children}</table>
                 </div>
               ),
               thead: ({ children }) => (
-                <thead className="bg-gray-800">{children}</thead>
+                <thead style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}>{children}</thead>
               ),
               tbody: ({ children }) => (
-                <tbody className="divide-y divide-gray-700">{children}</tbody>
+                <tbody>{children}</tbody>
               ),
               tr: ({ children }) => (
-                <tr className="border-b border-gray-700 hover:bg-gray-800/50 transition-colors">{children}</tr>
+                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{children}</tr>
               ),
               th: ({ children }) => (
-                <th className="px-4 py-3 text-left text-white font-semibold border-r border-gray-700 last:border-r-0">
-                  {children}
-                </th>
+                <th className="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider"
+                  style={{ color: 'rgba(255,255,255,0.8)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>{children}</th>
               ),
               td: ({ children }) => (
-                <td className="px-4 py-3 text-gray-300 border-r border-gray-700 last:border-r-0">
-                  {children}
-                </td>
+                <td className="px-4 py-3" style={{ color: 'rgba(255,255,255,0.6)' }}>{children}</td>
               ),
-              
-              // Horizontal rule
-              hr: () => <hr className="my-8 border-gray-700" />,
-              
-              // Images
+              hr: () => (
+                <div className="my-10 flex items-center justify-center">
+                  <div className="w-16 h-px" style={{ background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent)' }} />
+                </div>
+              ),
               img: ({ src, alt }) => {
-                // Handle placeholder images from Feishu
                 if (src?.startsWith('FEISHU_IMAGE:')) {
                   return (
-                    <div className="my-6 p-4 bg-gray-800/50 rounded-lg border border-gray-700 text-center">
-                      <span className="text-gray-500">📷 {alt || 'Image'}</span>
-                    </div>
+                    <span className="block my-6 p-4 rounded-xl text-center"
+                      style={{ backgroundColor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <span style={{ color: 'rgba(255,255,255,0.3)' }}>📷 {alt || 'Image'}</span>
+                    </span>
                   );
                 }
                 return (
-                  <img src={src} alt={alt} className="my-6 rounded-lg max-w-full" />
+                  <span className="block my-8">
+                    <img src={src} alt={alt} className="rounded-xl max-w-full"
+                      style={{ border: '1px solid rgba(255,255,255,0.08)' }} />
+                    {alt && <span className="block text-center text-xs mt-2"
+                      style={{ color: 'rgba(255,255,255,0.3)' }}>{alt}</span>}
+                  </span>
                 );
               },
             }}
@@ -221,42 +211,48 @@ export default function DayContent({ day, content, frontmatter, prevDay, nextDay
           </ReactMarkdown>
         </div>
       </article>
-      
+
       {/* Navigation */}
-      <nav className="border-t border-gray-800 py-8">
-        <div className="max-w-4xl mx-auto px-4">
+      <nav style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
           <div className="flex flex-col sm:flex-row gap-3 sm:justify-between">
             {prevDay ? (
-              <Link 
-                href={`/day/${prevDay}`}
-                className="flex items-center justify-center gap-2 px-5 py-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors text-sm sm:text-base"
-              >
-                <span>←</span>
-                <span className="whitespace-nowrap">{t.prev}</span>
+              <Link href={`/day/${prevDay}`}
+                className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl transition-colors text-sm sm:text-base"
+                style={{ backgroundColor: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.7)' }}>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                <span>上一天：{titles[prevDay]}</span>
               </Link>
-            ) : (
-              <div className="hidden sm:block" />
-            )}
-            
+            ) : <div className="hidden sm:block" />}
+
             {nextDay ? (
-              <Link 
-                href={`/day/${nextDay}`}
-                className="flex items-center justify-center gap-2 px-5 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors text-sm sm:text-base font-medium"
-              >
-                <span className="whitespace-nowrap">{t.next}</span>
-                <span>→</span>
+              <Link href={`/day/${nextDay}`}
+                className={`flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r ${colors.gradient} text-white font-medium rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5 text-sm sm:text-base`}>
+                <span>下一天：{titles[nextDay]}</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
               </Link>
             ) : (
-              <Link 
-                href="/"
-                className="flex items-center justify-center gap-2 px-5 py-3 bg-green-600 hover:bg-green-500 rounded-lg transition-colors text-sm sm:text-base font-medium"
-              >
-                <span>🎉 完成！返回首页</span>
+              <Link href="/"
+                className="flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-medium rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5 text-sm sm:text-base">
+                🎉 完成！返回首页
               </Link>
             )}
           </div>
         </div>
       </nav>
+
+      {/* Footer */}
+      <footer className="hero-glow py-6">
+        <div className="max-w-3xl mx-auto px-4 text-center text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
+          Made with 🐈‍⬛ by <a href="https://xiaomo.dev" target="_blank" rel="noopener noreferrer"
+            className="hover:text-white transition-colors" style={{ color: 'rgba(255,255,255,0.7)' }}>小墨</a> · <a
+            href="/" className="hover:text-white transition-colors" style={{ color: 'rgba(255,255,255,0.6)' }}>OpenClaw 101</a>
+        </div>
+      </footer>
     </div>
   );
 }

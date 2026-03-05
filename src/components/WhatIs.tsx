@@ -3,8 +3,7 @@
 import { useEffect, useRef } from 'react';
 
 interface Props {
-  
-  
+  locale?: 'en' | 'zh';
 }
 
 const featuresZh = [
@@ -49,9 +48,9 @@ const cardStyles = [
   { bg: 'from-green-50 to-emerald-50', border: 'hover:border-green-300', iconBg: 'bg-green-100' },
 ];
 
-export default function WhatIs() {
+export default function WhatIs({ locale = 'zh' }: { locale?: 'en' | 'zh' }) {
   const sectionRef = useRef<HTMLElement>(null);
-  const isZh = true;
+  const isZh = locale === 'zh';
   const features = isZh ? featuresZh : featuresEn;
 
   useEffect(() => {

@@ -2,15 +2,16 @@
 
 import { useState, useEffect } from 'react';
 
-export default function Navbar() {
+export default function Navbar({ locale = 'zh' }: { locale?: 'en' | 'zh' }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const isZh = locale === 'zh';
 
   const links = [
-    { label: '什么是 OpenClaw', href: '#what-is' },
-    { label: '技能生态', href: '#skills' },
-    { label: '资源聚合', href: '#resources' },
-    { label: '社区与贡献', href: '#community' },
+    { label: isZh ? '什么是 OpenClaw' : 'What is OpenClaw', href: '#what-is' },
+    { label: isZh ? '技能生态' : 'Skills', href: '#skills' },
+    { label: isZh ? '资源聚合' : 'Resources', href: '#resources' },
+    { label: isZh ? '社区与贡献' : 'Community', href: '#community' },
   ];
 
   useEffect(() => {
@@ -57,14 +58,14 @@ export default function Navbar() {
             className="text-sm transition-colors duration-200 font-medium"
             style={{ color: '#10B981' }}
           >
-            全部资源
+            {isZh ? '全部资源' : 'Resources'}
           </a>
           <a
             href="/deploy-tutorial"
             className="text-sm transition-colors duration-200 font-medium"
             style={{ color: '#3b82f6' }}
           >
-            部署教程
+            {isZh ? '部署教程' : 'Deploy Guide'}
           </a>
           
           <a
@@ -117,7 +118,7 @@ export default function Navbar() {
             className="block py-3 transition-colors duration-200 hover:text-white font-medium"
             style={{ color: '#10B981' }}
           >
-            全部资源 →
+            {isZh ? '全部资源 →' : 'Resources →'}
           </a>
           <a
             href="/deploy-tutorial"
@@ -125,7 +126,7 @@ export default function Navbar() {
             className="block py-3 transition-colors duration-200 hover:text-white font-medium"
             style={{ color: '#3b82f6' }}
           >
-            部署教程 →
+            {isZh ? '部署教程 →' : 'Deploy Guide →'}
           </a>
           
           <a

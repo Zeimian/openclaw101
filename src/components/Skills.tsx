@@ -3,8 +3,7 @@
 import { useEffect, useRef } from 'react';
 
 interface Props {
-  
-  
+  locale?: 'en' | 'zh';
 }
 
 // Featured skills with actual links from awesome-openclaw-skills
@@ -302,9 +301,9 @@ const featuredSkillsZh = [
   },
 ];
 
-export default function Skills() {
+export default function Skills({ locale = 'zh' }: { locale?: 'en' | 'zh' }) {
   const sectionRef = useRef<HTMLElement>(null);
-  const isZh = true;
+  const isZh = locale === 'zh';
   const categories = isZh ? featuredSkillsZh : featuredSkillsEn;
 
   useEffect(() => {

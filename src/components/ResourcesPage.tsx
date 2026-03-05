@@ -471,7 +471,7 @@ export default function ResourcesPage() {
             </p>
           </div>
           <a
-            href="https://github.com/mengjian-github/openclaw101"
+            href="https://github.com/Zeimian/openclaw101"
             target="_blank"
             rel="noopener noreferrer"
             className="relative shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-900 font-semibold rounded-xl hover:shadow-lg transition-all hover:-translate-y-0.5"
@@ -487,7 +487,7 @@ export default function ResourcesPage() {
       {/* ── footer ── */}
       <footer className="hero-glow py-8 mt-4">
         <div className="max-w-5xl mx-auto px-4 text-center text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          {t.footerMadeBy} <span style={{ color: 'rgba(255,255,255,0.7)' }}>小墨</span> · <a href={homeUrl} className="hover:underline" style={{ color: 'rgba(255,255,255,0.6)' }}>OpenClaw 101</a> · <a href="https://github.com/mengjian-github/openclaw101" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ color: 'rgba(255,255,255,0.6)' }}>GitHub</a>
+          {t.footerMadeBy} <span style={{ color: 'rgba(255,255,255,0.7)' }}>小墨</span> · <a href={homeUrl} className="hover:underline" style={{ color: 'rgba(255,255,255,0.6)' }}>OpenClaw 101</a> · <a href="https://github.com/Zeimian/openclaw101" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ color: 'rgba(255,255,255,0.6)' }}>GitHub</a>
         </div>
       </footer>
 

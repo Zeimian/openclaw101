@@ -1,12 +1,6 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { Dictionary } from '@/lib/i18n';
-
-interface CommunityProps {
-  locale: 'en' | 'zh';
-  dict: Dictionary;
-}
 
 const itemsZh = [
   {
@@ -46,9 +40,9 @@ const itemsZh = [
   },
   {
     icon: '⭐',
-    title: 'OpenClaw 101 GitHub',
+    title: 'OpenClaw 宝珠 GitHub',
     desc: '本站源码，欢迎 Star 和 PR',
-    link: 'https://github.com/mengjian-github/openclaw101',
+    link: 'https://github.com/Zeimian/openclaw101',
     color: 'hover:border-yellow-300 hover:bg-yellow-50',
   },
 ];
@@ -91,17 +85,17 @@ const itemsEn = [
   },
   {
     icon: '⭐',
-    title: 'OpenClaw 101 GitHub',
+    title: 'OpenClaw 宝珠 GitHub',
     desc: 'This site\'s source code. Star and PRs welcome!',
-    link: 'https://github.com/mengjian-github/openclaw101',
+    link: 'https://github.com/Zeimian/openclaw101',
     color: 'hover:border-yellow-300 hover:bg-yellow-50',
   },
 ];
 
-export default function Community() {
+export default function Community({ locale = 'zh' }: { locale?: 'en' | 'zh' }) {
   const sectionRef = useRef<HTMLElement>(null);
-  const isZh = true;
-  const items = itemsZh;
+  const isZh = locale === 'zh';
+  const items = isZh ? itemsZh : itemsEn;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -125,136 +119,6 @@ export default function Community() {
     <section id="community" ref={sectionRef} className="py-12 sm:py-24 bg-white">
       <div className="max-w-6xl mx-auto px-4">
 
-        {/* ── 小墨碎碎念 Banner ── */}
-        <a
-          href="https://xiaomo.dev"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="reveal group block mb-4 sm:mb-8 rounded-xl sm:rounded-2xl overflow-hidden border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all duration-300"
-          style={{ background: 'linear-gradient(135deg, #0a0e1a 0%, #111827 50%, #0f1524 100%)' }}
-        >
-          <div className="flex flex-col sm:flex-row items-center gap-4 p-4 sm:p-6 md:p-8">
-            {/* Avatar */}
-            <div
-              className="shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center text-2xl sm:text-3xl border"
-              style={{ background: 'linear-gradient(135deg, rgba(240,192,64,0.12), rgba(124,91,240,0.08))', borderColor: 'rgba(240,192,64,0.2)' }}
-            >
-              🐈‍⬛
-            </div>
-
-            {/* Content */}
-            <div className="flex-1 min-w-0 text-center sm:text-left order-3 sm:order-2">
-              <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
-                <span className="font-bold text-sm sm:text-base" style={{ color: '#e8eaf0' }}>
-                  {isZh ? '小墨的碎碎念' : "Xiaomo's Notes"}
-                </span>
-                <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full" style={{ background: 'rgba(240,192,64,0.12)', color: '#f0c040' }}>LATEST</span>
-              </div>
-              <p className="text-xs sm:text-sm leading-relaxed line-clamp-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                {isZh 
-                  ? '上岗第5天，我的"母体" OpenClaw 上了 Wikipedia、Wired、CNET、Forbes……'
-                  : 'Day 5 on the job. My "host" OpenClaw made it to Wikipedia, Wired, CNET, Forbes...'
-                }
-              </p>
-            </div>
-
-            {/* Arrow */}
-            <div className="shrink-0 flex items-center gap-2 order-2 sm:order-3" style={{ color: 'rgba(255,255,255,0.3)' }}>
-              <span className="text-[10px] sm:text-xs font-medium group-hover:text-white transition-colors">
-                {isZh ? '认识小墨' : 'Meet Xiaomo'}
-              </span>
-              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </div>
-          </div>
-        </a>
-
-        {/* ── OpenClaw实践者社区 Banner (Chinese only) ── */}
-        {isZh && (
-          <div className="reveal mb-8 sm:mb-16 rounded-xl sm:rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(135deg, #f97316 0%, #ec4899 50%, #d946ef 100%)' }}>
-            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 p-5 sm:p-6 md:p-10">
-              {/* Content */}
-              <div className="flex-1 min-w-0 text-center sm:text-left order-2 sm:order-1">
-                <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-2 sm:mb-3">
-                  <span className="text-xl sm:text-2xl md:text-3xl">👥</span>
-                  <span className="font-bold text-lg sm:text-xl md:text-2xl text-white">OpenClaw 实践者社区</span>
-                </div>
-                <p className="text-white/90 text-sm sm:text-base mb-3 sm:mb-5">
-                  回复「<span className="font-bold">OpenClaw</span>」自动拉群<br />
-                  <span className="text-xs sm:text-sm">500+ AI 探索者 · 每周直播分享</span>
-                </p>
-                <div className="flex flex-wrap justify-center sm:justify-start gap-2">
-                  <div className="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-white/20 rounded-full text-white text-xs sm:text-sm">
-                    <span>📱 公众号</span>
-                  </div>
-                  <div className="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-white/20 rounded-full text-white text-xs sm:text-sm">
-                    <span>💬 微信</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* QR Codes */}
-              <div className="flex flex-wrap justify-center gap-3 sm:gap-4 order-1 sm:order-2">
-                <div className="text-center">
-                  <img
-                    src="/wechat-qr.jpg"
-                    alt="公众号二维码"
-                    className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-lg border-2 border-white/30 mb-1.5 mx-auto object-cover"
-                  />
-                  <p className="text-white text-xs font-medium">公众号</p>
-                  <p className="text-white/60 text-[10px] mt-0.5">回复「OpenClaw」入群</p>
-                </div>
-                <div className="text-center">
-                  <img
-                    src="/wechat-personal-qr.jpg"
-                    alt="微信二维码"
-                    className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-lg border-2 border-white/30 mb-1.5 mx-auto object-cover"
-                  />
-                  <p className="text-white text-xs font-medium">加微信进群</p>
-                  <p className="text-white/60 text-[10px] mt-0.5">备注「OpenClaw」</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ── 视频课 Banner (Chinese only) ── */}
-        {isZh && (
-          <div className="reveal mb-8 sm:mb-16 rounded-xl sm:rounded-2xl overflow-hidden border border-gray-100" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)' }}>
-            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 p-5 sm:p-6 md:p-10">
-              {/* Content */}
-              <div className="flex-1 min-w-0 text-center sm:text-left order-2 sm:order-1">
-                <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-2 sm:mb-3">
-                  <span className="text-xl sm:text-2xl md:text-3xl">🎬</span>
-                  <span className="font-bold text-lg sm:text-xl md:text-2xl text-white">AI 私人助理实战课</span>
-                </div>
-                <p className="text-white/80 text-sm sm:text-base mb-2 sm:mb-4">
-                  用 OpenClaw 打造 7×24 小时自动化工作流
-                </p>
-                <div className="flex flex-wrap justify-center sm:justify-start gap-2 mb-3">
-                  <span className="px-3 py-1 bg-blue-500/20 rounded-full text-blue-300 text-xs">🔥 实战训练营</span>
-                  <span className="px-3 py-1 bg-green-500/20 rounded-full text-green-300 text-xs">📹 视频教程</span>
-                  <span className="px-3 py-1 bg-yellow-500/20 rounded-full text-yellow-300 text-xs">¥199</span>
-                </div>
-                <p className="text-white/50 text-xs">
-                  7 天打造你的智能私人助理 · 从入门到精通
-                </p>
-              </div>
-
-              {/* QR Code */}
-              <div className="text-center order-1 sm:order-2 shrink-0">
-                <img
-                  src="/images/video-course-qr-code.jpg"
-                  alt="视频课二维码"
-                  className="w-36 sm:w-44 md:w-52 rounded-xl mx-auto bg-white"
-                />
-                <p className="text-white/60 text-xs mt-2">扫码查看课程详情</p>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Section header */}
         <div className="text-center mb-8 sm:mb-16 reveal">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium mb-4">
@@ -265,38 +129,15 @@ export default function Community() {
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             {isZh ? (
-              <>OpenClaw 101 是开源项目，致力于做最好的中文 OpenClaw 资源聚合站。<br />欢迎补充资源、改进内容、分享经验。</>
+              <>OpenClaw 宝珠是开源项目，致力于做最好的中文 OpenClaw 资源聚合站。<br />欢迎补充资源、改进内容、分享经验。</>
             ) : (
-              <>OpenClaw 101 is open source, aiming to be the best resource hub for OpenClaw.<br />Contributions welcome — add resources, improve content, share your experience.</>
+              <>OpenClaw 宝珠 is open source, aiming to be the best resource hub for OpenClaw.<br />Contributions welcome — add resources, improve content, share your experience.</>
             )}
           </p>
         </div>
 
         {/* cards */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {/* 认识小墨 special card */}
-          <a
-            href="https://xiaomo.dev"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="reveal card-hover group block rounded-2xl p-6 border transition-all duration-300 hover:border-yellow-300"
-            style={{ background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', borderColor: '#fde68a' }}
-          >
-            <div className="text-3xl mb-3">🐈‍⬛</div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-yellow-700 transition-colors">
-              {isZh ? '认识小墨' : 'Meet Xiaomo'}
-            </h3>
-            <p className="text-sm text-gray-600">
-              {isZh 
-                ? '一只赛博黑猫的官网 — 能力展示、朋友圈、工作日志，看看 AI 助手真实的一天。'
-                : 'A cyber black cat\'s homepage — capabilities, social feed, work logs. See a day in the life of an AI assistant.'
-              }
-            </p>
-            <div className="mt-4 text-yellow-700 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              {isZh ? '访问 xiaomo.dev ↗' : 'Visit xiaomo.dev ↗'}
-            </div>
-          </a>
-
           {items.map((r, i) => (
             <a
               key={i}
@@ -321,7 +162,7 @@ export default function Community() {
         {/* Contribute banner */}
         <div className="reveal bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-8 md:p-12 text-center">
           <h3 className="text-2xl font-bold mb-3" style={{ color: '#fff' }}>
-            {isZh ? '🌟 一起让 OpenClaw 101 变得更好' : '🌟 Help Make OpenClaw 101 Better'}
+            {isZh ? '🌟 一起让 OpenClaw 宝珠变得更好' : '🌟 Help Make OpenClaw 宝珠 Better'}
           </h3>
           <p className="mb-6 max-w-lg mx-auto" style={{ color: 'rgba(255,255,255,0.7)' }}>
             {isZh ? (
@@ -331,7 +172,7 @@ export default function Community() {
             )}
           </p>
           <a
-            href="https://github.com/mengjian-github/openclaw101"
+            href="https://github.com/Zeimian/openclaw101"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-8 py-4 bg-white text-gray-900 font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"

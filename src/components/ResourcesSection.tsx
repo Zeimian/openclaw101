@@ -4,8 +4,7 @@ import { useEffect, useRef } from 'react';
 import { getFeaturedResources, categoryMeta, stats, type Resource } from '@/data/resources';
 
 interface Props {
-  
-  
+  locale?: 'en' | 'zh';
 }
 
 const colorMap: Record<string, string> = {
@@ -67,10 +66,10 @@ function ResourceCard({ r, i, isZh }: { r: Resource; i: number; isZh: boolean })
   );
 }
 
-export default function ResourcesSection() {
+export default function ResourcesSection({ locale = 'zh' }: { locale?: 'en' | 'zh' }) {
   const sectionRef = useRef<HTMLElement>(null);
   const featured = getFeaturedResources();
-  const isZh = true;
+  const isZh = locale === 'zh';
 
 
   useEffect(() => {

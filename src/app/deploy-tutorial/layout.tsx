@@ -1,31 +1,10 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'OpenClaw Deployment Tutorial - Step-by-Step Guide',
-  description: 'Complete step-by-step guide to deploy your own OpenClaw instance. Learn how to set up, configure, and run OpenClaw in production.',
+  title: 'OpenClaw 宝珠 - 7 天学习路径',
+  description: '从入门到进阶，每天一个主题，循序渐进掌握 OpenClaw 的全部能力。',
   alternates: {
     canonical: 'https://openclaw101.dev/deploy-tutorial',
-  },
-  openGraph: {
-    title: 'OpenClaw Deployment Tutorial - Step-by-Step Guide',
-    description: 'Complete step-by-step guide to deploy your own OpenClaw instance',
-    type: 'website',
-    url: 'https://openclaw101.dev/deploy-tutorial',
-    siteName: 'OpenClaw 101',
-    images: [
-      {
-        url: '/og-image-deploy-tutorial.png',
-        width: 1200,
-        height: 630,
-        alt: 'OpenClaw Deployment Tutorial',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'OpenClaw Deployment Tutorial - Step-by-Step Guide',
-    description: 'Complete step-by-step guide to deploy your own OpenClaw instance',
-    images: ['/og-image-deploy-tutorial.png'],
   },
 };
 

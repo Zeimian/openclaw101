@@ -1,6 +1,5 @@
 'use client';
 
-import { Locale, getDictionary } from '@/lib/i18n';
 import Navbar from './Navbar';
 import Hero from './Hero';
 import WhatIs from './WhatIs';
@@ -10,22 +9,17 @@ import ResourcesSection from './ResourcesSection';
 import Community from './Community';
 import Footer from './Footer';
 
-
-interface HomePageProps {
-  locale: Locale;
-}
-
-export default function HomePage() {
+export default function HomePage({ locale = 'zh' }: { locale?: 'en' | 'zh' }) {
   return (
     <main>
-      <Navbar />
-      <Hero />
-      <WhatIs />
-      <LearningPath />
-      <Skills />
-      <ResourcesSection />
-      <Community />
-      <Footer />
+      <Navbar locale={locale} />
+      <Hero locale={locale} />
+      <WhatIs locale={locale} />
+      <LearningPath locale={locale} />
+      <Skills locale={locale} />
+      <ResourcesSection locale={locale} />
+      <Community locale={locale} />
+      <Footer locale={locale} />
     </main>
   );
 }

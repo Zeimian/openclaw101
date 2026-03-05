@@ -3,8 +3,7 @@
 import { useEffect, useRef } from 'react';
 
 interface Props {
-  
-  
+  locale?: 'en' | 'zh';
 }
 
 const daysZh = [
@@ -121,9 +120,9 @@ const dayColors = [
   { bg: 'from-yellow-50 to-amber-50', border: 'hover:ring-2 hover:ring-day-7/30', badge: 'bg-day-7', stripe: 'from-day-7 to-yellow-400', link: 'text-day-7' },
 ];
 
-export default function LearningPath() {
+export default function LearningPath({ locale = 'zh' }: { locale?: 'en' | 'zh' }) {
   const sectionRef = useRef<HTMLElement>(null);
-  const isZh = true;
+  const isZh = locale === 'zh';
   const days = isZh ? daysZh : daysEn;
 
   useEffect(() => {

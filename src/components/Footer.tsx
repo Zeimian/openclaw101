@@ -1,12 +1,5 @@
-import { Dictionary } from '@/lib/i18n';
-
-interface FooterProps {
-  locale: 'en' | 'zh';
-  dict: Dictionary;
-}
-
-export default function Footer() {
-  const isZh = true;
+export default function Footer({ locale = 'zh' }: { locale?: 'en' | 'zh' }) {
+  const isZh = locale === 'zh';
 
   return (
     <footer className="hero-glow py-6 sm:py-12">
@@ -30,7 +23,7 @@ export default function Footer() {
             </h4>
             <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
               <li><a href="#getting-started" className="hover:text-white transition-colors">{isZh ? '7天学习路径' : '7-Day Path'}</a></li>
-              <li><a href="/resources" className="hover:text-white transition-colors">全部资源</a></li>
+              <li><a href="/resources" className="hover:text-white transition-colors">{isZh ? '全部资源' : 'All Resources'}</a></li>
               <li><a href="https://my.feishu.cn/wiki/YkWgwqSchi9xW3kEuZscAm0lnFf" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">{isZh ? '飞书知识库' : 'Feishu Wiki'}</a></li>
               <li><a href="#skills" className="hover:text-white transition-colors">{isZh ? '技能推荐' : 'Featured Skills'}</a></li>
             </ul>
@@ -43,7 +36,7 @@ export default function Footer() {
               <li><a href="https://discord.com/invite/clawd" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Discord</a></li>
               <li><a href="https://www.reddit.com/r/ThinkingDeeplyAI/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Reddit</a></li>
               <li><a href="https://xiaomo.dev" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">🐈‍⬛ {isZh ? '认识小墨' : 'Meet Xiaomo'}</a></li>
-              <li><a href="https://github.com/mengjian-github/openclaw101" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">{isZh ? '贡献资源 (PR)' : 'Contribute (PR)'}</a></li>
+              <li><a href="https://github.com/Zeimian/openclaw101" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">{isZh ? '贡献资源 (PR)' : 'Contribute (PR)'}</a></li>
               <li><a href="https://www.skill-cn.com?from=openclaw101" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">{isZh ? 'Skill Hub 中国' : 'Skill Hub CN'}</a></li>
             </ul>
           </div>
@@ -73,7 +66,7 @@ export default function Footer() {
               <span>{isZh ? '开源共享' : 'Open Source'}</span>
               <span className="hidden sm:inline">·</span>
               <span className="sm:hidden">|</span>
-              <a href="https://github.com/mengjian-github/openclaw101" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+              <a href="https://github.com/Zeimian/openclaw101" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                 GitHub
               </a>
             </div>

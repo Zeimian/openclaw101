@@ -1,10 +1,9 @@
 'use client';
 
 import { stats } from '@/data/resources';
-import { Dictionary } from '@/lib/i18n';
 
-export default function Hero() {
-  const isZh = true;
+export default function Hero({ locale = 'zh' }: { locale?: 'en' | 'zh' }) {
+  const isZh = locale === 'zh';
 
   return (
     <section className="relative min-h-[100svh] flex items-center justify-center hero-glow-vivid overflow-hidden pt-28 pb-10 sm:pt-0 sm:pb-0">
@@ -62,8 +61,6 @@ export default function Hero() {
             GitHub
           </a>
         </div>
-
-        {/* PLACEHOLDER_HERO_STATS */}
 
         {/* Stats — mobile */}
         <div className="mt-8 sm:mt-16 mx-auto max-w-md grid grid-cols-2 gap-y-4 gap-x-6 sm:hidden">
