@@ -11,6 +11,7 @@ export async function generateStaticParams() {
   return [
     { slug: 'windows-deployment' },
     { slug: 'macos-deployment' },
+    { slug: 'wecom-integration' },
   ];
 }
 

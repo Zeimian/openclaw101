@@ -1,0 +1,282 @@
+---
+title: "企业微信接入 OpenClaw 完整指南"
+description: "OpenClaw 接入企业微信机器人配置教程，包含创建应用、配置权限、获取凭证、测试连接等完整步骤。"
+---
+
+# 🏢 企业微信接入 OpenClaw 完整指南
+
+> **最后更新：** 2026-03-09  
+> **版本：** v1.0
+
+---
+
+## 📋 目录
+
+1. [准备工作](#准备工作)
+2. [创建企业微信应用](#创建企业微信应用)
+3. [配置应用权限](#配置应用权限)
+4. [配置接收消息](#配置接收消息)
+5. [配置 OpenClaw](#配置 OpenClaw)
+6. [测试连接](#测试连接)
+7. [常见问题](#常见问题)
+
+---
+
+## 准备工作
+
+### 前置条件
+
+| 项目 | 要求 |
+|------|------|
+| 企业微信管理员账号 | 必需 |
+| 企业已认证 | 必需 |
+| OpenClaw 已安装 | 必需 |
+| 公网服务器/IP | 推荐（用于接收消息回调） |
+
+### 所需信息
+
+在开始之前，请准备以下信息：
+
+- 企业微信管理员账号（用于登录企业微信管理后台）
+- 企业 ID（CorpID）
+- 服务器公网 IP 或域名（用于配置回调 URL）
+
+---
+
+## 创建企业微信应用
+
+### 步骤 1：登录企业微信管理后台
+
+1. 访问 [企业微信管理后台](https://work.weixin.qq.com/wework_admin/frame#index)
+2. 使用管理员账号扫码登录
+
+### 步骤 2：创建自建应用
+
+1. 进入 **应用管理** → **应用** → **自建**
+2. 点击 **创建应用**
+3. 填写应用信息：
+   - **应用名称**：OpenClaw 助手（或自定义）
+   - **应用图标**：上传 96x96 像素的图标
+   - **可见范围**：选择需要使用的应用成员或部门
+4. 点击 **创建**
+
+### 步骤 3：获取应用凭证
+
+创建完成后，在应用详情页面记录以下信息：
+
+- **AgentId**：应用 ID（数字）
+- **Secret**：应用密钥（点击"查看"获取）
+
+> ⚠️ **重要提示**
+> 
+> - Secret 只能查看一次，请立即复制保存
+> - 不要将 Secret 泄露给他人
+> - 如 Secret 泄露，可在管理后台重置
+
+---
+
+## 配置应用权限
+
+### 步骤 1：开通基础权限
+
+在应用详情页的 **权限管理** 页面，开通以下权限：
+
+| 权限名称 | 权限标识 | 用途 |
+|---------|---------|------|
+| 通讯录基本信息 | `contact:user:readonly` | 读取成员信息 |
+| 接收消息 | `im:message:receive` | 接收成员发送的消息 |
+| 发送应用消息 | `im:message:send` | 向成员发送消息 |
+
+### 步骤 2：配置接收消息
+
+1. 进入 **接收消息** 页面
+2. 开启 **接收消息** 开关
+3. 配置回调 URL：
+   - **URL**：`https://你的域名/openclaw/wecom/callback`
+   - **Token**：自定义令牌（如：`openclaw_token_2026`）
+   - **EncodingAESKey**：点击"随机生成"并保存
+
+> 💡 **提示**
+> 
+> 回调 URL 需要是公网可访问的地址。如果是本地测试，可以使用 ngrok 等工具将本地服务暴露到公网。
+
+---
+
+## 配置 OpenClaw
+
+### 步骤 1：编辑配置文件
+
+编辑 OpenClaw 配置文件（通常位于 `~/.openclaw/openclaw.json`）：
+
+```json
+{
+  "channels": {
+    "wecom": {
+      "enabled": true,
+      "corpId": "你的企业 ID（CorpID）",
+      "agentId": 1000001,
+      "secret": "你的应用 Secret",
+      "token": "你的回调 Token",
+      "encodingAesKey": "你的 EncodingAESKey"
+    }
+  }
+}
+```
+
+### 步骤 2：安装企业微信技能
+
+```bash
+npx clawhub install openclaw-wecom-channel
+```
+
+### 步骤 3：重启 Gateway
+
+```bash
+openclaw gateway restart
+```
+
+---
+
+## 测试连接
+
+### 步骤 1：验证回调 URL
+
+在企业微信管理后台的 **接收消息** 页面，点击 **验证 URL**。
+
+如果验证成功，会显示"验证通过"。
+
+### 步骤 2：发送测试消息
+
+1. 在企业微信中找到你创建的应用
+2. 发送一条测试消息：`你好`
+3. 观察 OpenClaw 是否收到并回复
+
+### 步骤 3：查看日志
+
+```bash
+# 查看 Gateway 日志
+tail -f ~/.openclaw/logs/gateway.log | grep wecom
+```
+
+如果看到消息接收和发送的日志，说明配置成功。
+
+---
+
+## 常见问题
+
+### 问题 1：回调 URL 验证失败
+
+**错误信息：** "验证失败，无法访问回调 URL"
+
+**原因：**
+- 回调 URL 不是公网地址
+- 服务器防火墙阻止了企业微信的请求
+- 回调服务未启动
+
+**解决方案：**
+1. 使用公网服务器或 ngrok 等工具
+2. 检查防火墙设置，确保 80/443 端口开放
+3. 确认 OpenClaw Gateway 正在运行
+
+### 问题 2：收不到消息
+
+**检查清单：**
+1. ✅ 应用可见范围包含测试成员
+2. ✅ 接收消息开关已开启
+3. ✅ 回调 URL 配置正确
+4. ✅ Gateway 日志无报错
+
+**调试命令：**
+```bash
+# 查看企业微信通道日志
+tail -f ~/.openclaw/logs/gateway.log | grep wecom
+```
+
+### 问题 3：发送消息失败
+
+**错误信息：** "invalid credential"
+
+**原因：** Secret 或 CorpID 配置错误
+
+**解决方案：**
+1. 检查 `openclaw.json` 中的 `corpId` 和 `secret` 是否正确
+2. 在企业微信管理后台重新查看 Secret
+3. 重启 Gateway
+
+### 问题 4：权限不足
+
+**错误信息：** "no privilege to access"
+
+**原因：** 应用权限未开通
+
+**解决方案：**
+1. 在企业微信管理后台开通对应权限
+2. 等待 5-10 分钟权限生效
+3. 重启 Gateway
+
+---
+
+## 高级配置
+
+### 配置多个企业微信应用
+
+如需配置多个企业微信应用，可在配置文件中添加多个账号：
+
+```json
+{
+  "channels": {
+    "wecom": {
+      "enabled": true,
+      "accounts": {
+        "main": {
+          "corpId": "企业 ID 1",
+          "agentId": 1000001,
+          "secret": "Secret 1",
+          "token": "Token 1",
+          "encodingAesKey": "AES Key 1"
+        },
+        "backup": {
+          "corpId": "企业 ID 2",
+          "agentId": 1000002,
+          "secret": "Secret 2",
+          "token": "Token 2",
+          "encodingAesKey": "AES Key 2"
+        }
+      }
+    }
+  }
+}
+```
+
+### 配置消息格式
+
+可自定义企业微信消息的发送格式：
+
+```json
+{
+  "channels": {
+    "wecom": {
+      "enabled": true,
+      "messageFormat": {
+        "type": "text",
+        "enableMarkdown": true
+      }
+    }
+  }
+}
+```
+
+---
+
+## 参考资源
+
+| 资源 | 链接 |
+|------|------|
+| 企业微信开放文档 | https://work.weixin.qq.com/api/doc |
+| 企业微信管理后台 | https://work.weixin.qq.com/wework_admin |
+| OpenClaw 企业微信技能 | https://github.com/openclaw/openclaw-wecom-channel |
+| ngrok 官网 | https://ngrok.com |
+
+---
+
+**工程师 🔧** | 文档版本：v1.0 | 最后更新：2026-03-09
