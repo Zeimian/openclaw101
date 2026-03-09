@@ -1,0 +1,411 @@
+---
+title: "Windows 系统部署 OpenClaw 完整指南"
+description: "在 Windows 系统上安装和配置 OpenClaw 的完整步骤，包括系统要求、安装流程、配置说明和常见问题排查。"
+---
+
+# 🪟 Windows 系统部署 OpenClaw 完整指南
+
+> **最后更新：** 2026-03-09  
+> **版本：** v1.0
+
+---
+
+## 📋 目录
+
+1. [系统要求](#系统要求)
+2. [安装步骤](#安装步骤)
+3. [配置说明](#配置说明)
+4. [启动与验证](#启动与验证)
+5. [常见问题](#常见问题)
+6. [PowerShell 一键安装脚本](#powershell-一键安装脚本)
+
+---
+
+## 系统要求
+
+### 硬件要求
+
+| 组件 | 最低要求 | 推荐配置 |
+|------|---------|---------|
+| CPU | Intel i5 / AMD Ryzen 5 | Intel i7 / AMD Ryzen 7 |
+| 内存 | 8 GB | 16 GB 或更高 |
+| 硬盘 | 10 GB 可用空间 | SSD 20 GB 可用空间 |
+| 系统 | Windows 10 64 位 | Windows 11 64 位 |
+
+### 软件要求
+
+| 软件 | 版本 | 说明 |
+|------|------|------|
+| **Node.js** | v20.x 或更高 | 必需，推荐使用 LTS 版本 |
+| **Git** | v2.x 或更高 | 用于克隆代码库 |
+| **PowerShell** | v7.x 或更高 | 推荐使用 PowerShell 7 |
+| **VS Code** (可选) | 最新版 | 代码编辑和调试 |
+
+---
+
+## 安装步骤
+
+### 第一步：安装 Node.js
+
+1. 访问 https://nodejs.org/
+2. 下载 **LTS 版本**（推荐 v20.x）
+3. 运行安装程序，按默认选项安装
+4. 验证安装：
+
+```powershell
+node --version
+npm --version
+```
+
+应显示类似：
+```
+v20.11.0
+10.2.4
+```
+
+### 第二步：安装 Git
+
+1. 访问 https://git-scm.com/download/win
+2. 下载并运行安装程序
+3. 安装时使用默认选项
+4. 验证安装：
+
+```powershell
+git --version
+```
+
+### 第三步：安装 OpenClaw
+
+**方式 A：使用 npm 全局安装（推荐）**
+
+```powershell
+npm install -g openclaw
+```
+
+**方式 B：从 GitHub 克隆（开发模式）**
+
+```powershell
+# 创建安装目录
+mkdir C:\OpenClaw
+cd C:\OpenClaw
+
+# 克隆仓库
+git clone https://github.com/openclaw/openclaw.git .
+
+# 安装依赖
+npm install
+```
+
+### 第四步：初始化配置
+
+```powershell
+# 创建配置目录
+mkdir $env:USERPROFILE\.openclaw
+
+# 生成默认配置
+openclaw init
+```
+
+---
+
+## 配置说明
+
+### 配置文件位置
+
+```
+C:\Users\<用户名>\.openclaw\openclaw.json
+```
+
+### 基础配置模板
+
+```json
+{
+  "version": "1.0",
+  "gateway": {
+    "port": 18789,
+    "host": "localhost"
+  },
+  "channels": {
+    "feishu": {
+      "enabled": true,
+      "accounts": {
+        "main": {
+          "appId": "cli_xxxxxxxxxxxxxxxx",
+          "appSecret": "你的 App Secret",
+          "botName": "大管家"
+        }
+      }
+    },
+    "webchat": {
+      "enabled": true
+    }
+  },
+  "models": {
+    "primary": "bailian/qwen3.5-plus",
+    "providers": {
+      "bailian": {
+        "apiKey": "你的阿里云百炼 API Key",
+        "enabled": true
+      }
+    }
+  },
+  "workspace": "C:\\Users\\<用户名>\\Desktop\\知识库"
+}
+```
+
+### 推荐模型配置（中国大陆）
+
+| 用途 | 模型 ID | 提供商 | 说明 |
+|------|--------|--------|------|
+| 主模型 | `bailian/qwen3.5-plus` | 阿里云百炼 | 1M 上下文，性价比高 |
+| 代码 | `bailian/qwen3-coder-plus` | 阿里云百炼 | 代码专用模型 |
+| 推理 | `bailian/qwen3-max-2026-01-23` | 阿里云百炼 | 最强推理能力 |
+| 创意 | `bailian/MiniMax-M2.5` | 阿里云百炼 | 创意生成 |
+
+**获取 API Key：**
+1. 访问 https://bailian.console.aliyun.com/
+2. 注册/登录阿里云账号
+3. 开通百炼服务
+4. 创建 API Key
+
+---
+
+## 启动与验证
+
+### 启动 Gateway
+
+```powershell
+cd C:\Users\<用户名>\.openclaw
+openclaw gateway
+```
+
+### 验证服务
+
+**方式 1：浏览器访问**
+
+打开浏览器访问：http://localhost:18789
+
+**方式 2：命令行验证**
+
+```powershell
+curl http://localhost:18789/health
+```
+
+应返回：
+```json
+{"status": "ok", "version": "2026.3.2"}
+```
+
+**方式 3：查看日志**
+
+```powershell
+Get-Content C:\Users\<用户名>\.openclaw\logs\gateway.log -Tail 50 -Wait
+```
+
+### 停止服务
+
+在运行 Gateway 的 PowerShell 窗口按 `Ctrl + C`
+
+---
+
+## 常见问题
+
+### 问题 1：Gateway 启动失败
+
+**错误信息：** `Error: listen EADDRINUSE: address already in use :::18789`
+
+**原因：** 端口 18789 已被占用
+
+**解决方案：**
+
+```powershell
+# 查找占用端口的进程
+netstat -ano | findstr :18789
+
+# 杀死进程（替换 PID 为实际进程 ID）
+taskkill /F /PID <PID>
+
+# 或修改配置文件使用其他端口
+```
+
+### 问题 2：飞书机器人不回复
+
+**检查清单：**
+
+1. ✅ 飞书应用已发布
+2. ✅ 事件订阅已配置（im.message.receive_v1）
+3. ✅ App ID 和 App Secret 正确
+4. ✅ 机器人已添加到聊天
+5. ✅ Gateway 日志显示 WebSocket 连接成功
+
+**调试命令：**
+
+```powershell
+Get-Content C:\Users\<用户名>\.openclaw\logs\gateway.log | Select-String "feishu"
+```
+
+### 问题 3：npm 安装失败
+
+**错误信息：** `npm ERR! code EACCES`
+
+**解决方案：**
+
+```powershell
+# 以管理员身份运行 PowerShell
+npm install -g openclaw --force
+```
+
+### 问题 4：模型 API 调用失败
+
+**检查清单：**
+
+1. ✅ API Key 正确且未过期
+2. ✅ 账户余额充足
+3. ✅ 网络连接正常
+4. ✅ 模型 ID 拼写正确
+
+**测试命令：**
+
+```powershell
+curl -H "Authorization: Bearer 你的 API Key" https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation
+```
+
+### 问题 5：PowerShell 执行策略限制
+
+**错误信息：** `cannot be loaded because running scripts is disabled on this system`
+
+**解决方案：**
+
+```powershell
+# 以管理员身份运行 PowerShell
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# 确认更改
+Y
+```
+
+---
+
+## PowerShell 一键安装脚本
+
+创建文件 `install-openclaw.ps1`：
+
+```powershell
+# OpenClaw Windows 一键安装脚本
+# 使用方法：以管理员身份运行 PowerShell，然后执行 .\install-openclaw.ps1
+
+Write-Host "======================================" -ForegroundColor Cyan
+Write-Host "  OpenClaw Windows 安装脚本" -ForegroundColor Cyan
+Write-Host "======================================" -ForegroundColor Cyan
+Write-Host ""
+
+# 检查 Node.js
+Write-Host "[1/5] 检查 Node.js..." -ForegroundColor Yellow
+if (Get-Command node -ErrorAction SilentlyContinue) {
+    $nodeVersion = node --version
+    Write-Host "  ✓ Node.js 已安装：$nodeVersion" -ForegroundColor Green
+} else {
+    Write-Host "  ✗ Node.js 未安装，请先安装 Node.js LTS" -ForegroundColor Red
+    Write-Host "  下载地址：https://nodejs.org/" -ForegroundColor Yellow
+    exit 1
+}
+
+# 检查 Git
+Write-Host "[2/5] 检查 Git..." -ForegroundColor Yellow
+if (Get-Command git -ErrorAction SilentlyContinue) {
+    $gitVersion = git --version
+    Write-Host "  ✓ Git 已安装：$gitVersion" -ForegroundColor Green
+} else {
+    Write-Host "  ✗ Git 未安装，请先安装 Git" -ForegroundColor Red
+    Write-Host "  下载地址：https://git-scm.com/download/win" -ForegroundColor Yellow
+    exit 1
+}
+
+# 安装 OpenClaw
+Write-Host "[3/5] 安装 OpenClaw..." -ForegroundColor Yellow
+npm install -g openclaw
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "  ✓ OpenClaw 安装成功" -ForegroundColor Green
+} else {
+    Write-Host "  ✗ OpenClaw 安装失败" -ForegroundColor Red
+    exit 1
+}
+
+# 创建配置目录
+Write-Host "[4/5] 创建配置目录..." -ForegroundColor Yellow
+$openclawDir = "$env:USERPROFILE\.openclaw"
+if (-not (Test-Path $openclawDir)) {
+    New-Item -ItemType Directory -Path $openclawDir | Out-Null
+    Write-Host "  ✓ 配置目录已创建：$openclawDir" -ForegroundColor Green
+} else {
+    Write-Host "  ✓ 配置目录已存在" -ForegroundColor Green
+}
+
+# 初始化配置
+Write-Host "[5/5] 初始化配置..." -ForegroundColor Yellow
+openclaw init
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "  ✓ 配置初始化完成" -ForegroundColor Green
+} else {
+    Write-Host "  ⚠ 配置初始化失败，可手动创建配置文件" -ForegroundColor Yellow
+}
+
+Write-Host ""
+Write-Host "======================================" -ForegroundColor Cyan
+Write-Host "  安装完成！" -ForegroundColor Green
+Write-Host "======================================" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "下一步：" -ForegroundColor Yellow
+Write-Host "1. 编辑配置文件：$openclawDir\openclaw.json" -ForegroundColor White
+Write-Host "2. 配置飞书/Telegram 凭证" -ForegroundColor White
+Write-Host "3. 配置模型 API Key" -ForegroundColor White
+Write-Host "4. 启动服务：openclaw gateway" -ForegroundColor White
+Write-Host ""
+```
+
+**使用方法：**
+
+```powershell
+# 1. 下载脚本
+# 保存为 install-openclaw.ps1
+
+# 2. 以管理员身份运行 PowerShell
+# 3. 执行脚本
+.\install-openclaw.ps1
+```
+
+---
+
+## 附录：目录结构
+
+```
+C:\Users\<用户名>\.openclaw\
+├── openclaw.json           # 主配置文件
+├── .env                    # 环境变量（API Keys）
+├── logs\
+│   └── gateway.log        # Gateway 日志
+├── workspace\             # 工作空间
+│   ├── SOUL.md           # Agent 身份定义
+│   ├── AGENTS.md         # Agent 配置
+│   ├── MEMORY.md         # 长期记忆
+│   └── skills\           # 已安装技能
+└── cron\
+    └── jobs.json         # 定时任务配置
+```
+
+---
+
+## 参考资源
+
+| 资源 | 链接 |
+|------|------|
+| OpenClaw 官方文档 | https://docs.openclaw.ai |
+| OpenClaw GitHub | https://github.com/openclaw/openclaw |
+| 飞书开放平台 | https://open.feishu.cn |
+| 阿里云百炼 | https://bailian.console.aliyun.com |
+| Node.js 下载 | https://nodejs.org |
+| Git 下载 | https://git-scm.com/download/win |
+
+---
+
+**工程师 🔧** | 文档版本：v1.0 | 最后更新：2026-03-09
