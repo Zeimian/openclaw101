@@ -1,396 +1,563 @@
 ---
 title: "Windows 系统部署 OpenClaw 完整指南"
-description: "在 Windows 系统上安装和配置 OpenClaw 的完整步骤，包括系统要求、安装流程、配置说明和常见问题排查。"
+description: "在 Windows 系统上通过 WSL 安装和配置 OpenClaw 的完整步骤，包含 9 个踩坑解决方案。"
 ---
 
 # 🪟 Windows 系统部署 OpenClaw 完整指南
 
-> **最后更新：** 2026-03-09  
-> **版本：** v1.0
+> **最后更新：** 2026-03-11  
+> **版本：** v2.0（含 9 个踩坑解决方案）
 
 ---
 
 ## 📋 目录
 
-1. [系统要求](#系统要求)
-2. [安装步骤](#安装步骤)
-3. [配置说明](#配置说明)
-4. [启动与验证](#启动与验证)
-5. [常见问题](#常见问题)
-6. [PowerShell 一键安装脚本](#powershell-一键安装脚本)
+1. [前置环境](#前置环境)
+2. [部署总览](#部署总览)
+3. [第一阶段：安装 WSL](#第一阶段安装-wsl)
+4. [第二阶段：配置 Linux 环境](#第二阶段配置-linux-环境)
+5. [第三阶段：安装 OpenClaw](#第三阶段安装-openclaw)
+6. [第四阶段：核心参数配置](#第四阶段核心参数配置)
+7. [第五阶段：点火启动](#第五阶段点火启动)
+8. [验证安装](#验证安装)
+9. [下一步：飞书机器人对接](#下一步飞书机器人对接)
+10. [常见问题 FAQ](#常见问题-faq)
+11. [附录：完整命令清单](#附录完整命令清单)
 
 ---
 
-## 系统要求
+## 前置环境
 
-### 硬件要求
+**系统要求：**
+- Windows 11 64 位（恢复出厂设置的干净系统）
+- 管理员权限
+- 稳定的网络连接
 
-| 组件 | 最低要求 | 推荐配置 |
-|------|---------|---------|
-| CPU | Intel i5 / AMD Ryzen 5 | Intel i7 / AMD Ryzen 7 |
-| 内存 | 8 GB | 16 GB 或更高 |
-| 硬盘 | 10 GB 可用空间 | SSD 20 GB 可用空间 |
-| 系统 | Windows 10 64 位 | Windows 11 64 位 |
-
-### 软件要求
-
-| 软件 | 版本 | 说明 |
-|------|------|------|
-| **Node.js** | v20.x 或更高 | 必需，推荐使用 LTS 版本 |
-| **Git** | v2.x 或更高 | 用于克隆代码库 |
-| **PowerShell** | v7.x 或更高 | 推荐使用 PowerShell 7 |
-| **VS Code** (可选) | 最新版 | 代码编辑和调试 |
+**最终目标：**
+- 在本地 Linux 环境中稳定运行 OpenClaw
+- 对接阿里百川 Coding 计划大模型
+- 为后续对接飞书机器人铺平道路
 
 ---
 
-## 安装步骤
+## 部署总览
 
-### 第一步：安装 Node.js
+```
+┌─────────────────────────────────────────────────────────┐
+│  📍 OpenClaw Windows WSL 部署流程（5 阶段）              │
+├─────────────────────────────────────────────────────────┤
+│  阶段 1: 安装 WSL           →  Ubuntu 22.04.5 LTS      │
+│  阶段 2: 配置 Linux 环境     →  Node.js v22 + Git      │
+│  阶段 3: 安装 OpenClaw      →  官方一键脚本            │
+│  阶段 4: 核心参数配置       →  API Key + Gateway Token │
+│  阶段 5: 点火启动           →  openclaw start         │
+└─────────────────────────────────────────────────────────┘
+```
 
-1. 访问 https://nodejs.org/
-2. 下载 **LTS 版本**（推荐 v20.x）
-3. 运行安装程序，按默认选项安装
-4. 验证安装：
+**预计时间：** 15-30 分钟  
+**难度：** ⭐⭐☆☆☆（按步骤操作即可）
+
+---
+
+## 第一阶段：安装 WSL
+
+### 方式 1：命令行一键安装
+
+以管理员身份打开 PowerShell，执行：
 
 ```powershell
-node --version
-npm --version
+wsl --install
 ```
 
-应显示类似：
+### 方式 2：微软商店安装（推荐）⭐
+
+1. 打开 **Microsoft Store**（微软商店）
+2. 搜索 **"Ubuntu 22.04.5 LTS"**
+3. 点击 **"获取"** 或 **"安装"**
+4. 等待下载完成
+5. 点击 **"打开"**，等待系统解压初始化
+
+### 初始化系统
+
 ```
-v20.11.0
-10.2.4
-```
+Installing, this may take a few minutes...
+Please create a default UNIX user account. The username does not need to match your Windows username.
+For more information visit: https://aka.ms/wslusers
 
-### 第二步：安装 Git
-
-1. 访问 https://git-scm.com/download/win
-2. 下载并运行安装程序
-3. 安装时使用默认选项
-4. 验证安装：
-
-```powershell
-git --version
-```
-
-### 第三步：安装 OpenClaw
-
-**方式 A：使用 npm 全局安装（推荐）**
-
-```powershell
-npm install -g openclaw
+Enter new UNIX username: yuchen
+New password: ********
+Retype new password: ********
 ```
 
-**方式 B：从 GitHub 克隆（开发模式）**
+**注意：**
+- 用户名必须是**纯英文**
+- 密码输入时**屏幕无显示**（正常现象）
+- 按回车确认
 
-```powershell
-# 创建安装目录
-mkdir C:\OpenClaw
-cd C:\OpenClaw
+---
 
-# 克隆仓库
-git clone https://github.com/openclaw/openclaw.git .
+### ⚠️ 踩坑 1：VPN 导致安装超时
 
-# 安装依赖
-npm install
+**现象：**
+```
+ErrorCode: Wsl/WIN_INET_E_TIMEOUT
+```
+或进度条卡在 1.5% 不动。
+
+**原因：**
+VPN（梯子）干扰了命令行连接微软服务器的路由。
+
+**解决方案：**
+1. 按 `Ctrl + C` 强制中断下载
+2. **关闭 VPN**
+3. 改用**微软商店安装**（方式 2）
+
+---
+
+### ⚠️ 踩坑 2：WSL 2 内核更新失败
+
+**现象：**
+```
+Wsl/WSL_E_WSL2_INSTALL_REQUIRED
 ```
 
-### 第四步：初始化配置
+**解决方案：**
+1. 手动下载 WSL2 内核安装包：
+   https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi
+2. 运行安装包
+3. 重新执行 `wsl --install`
 
-```powershell
-# 创建配置目录
-mkdir $env:USERPROFILE\.openclaw
+---
 
-# 生成默认配置
-openclaw init
+## 第二阶段：配置 Linux 环境
+
+### 更新软件源并安装基础工具
+
+```bash
+sudo apt update
+sudo apt install curl git -y
+```
+
+### 安装指定版本的 Node.js (v22)
+
+```bash
+# 下载 NodeSource 源
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+
+# 执行安装
+sudo apt install -y nodejs
+
+# 验证安装
+node --version  # 应显示 v22.x.x
+npm --version   # 应显示 10.x.x
 ```
 
 ---
 
-## 配置说明
+### ⚠️ 踩坑 3：Node.js 版本过低
 
-### 配置文件位置
+**现象：**
+通过 `sudo apt install nodejs` 安装的版本是 v12 或 v14，导致 OpenClaw 无法运行。
 
+**原因：**
+Ubuntu 默认软件源的 Node.js 版本太老。
+
+**解决方案：**
+必须使用 **NodeSource** 源安装 v22：
+```bash
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt install -y nodejs
 ```
-C:\Users\<用户名>\.openclaw\openclaw.json
+
+---
+
+## 第三阶段：安装 OpenClaw
+
+### 运行官方一键安装脚本
+
+```bash
+curl -fsSL https://openclaw.ai/install.sh | bash
 ```
 
-### 基础配置模板
+安装脚本会自动：
+- 检测 Linux 环境
+- 检查 Node.js 和 Git 版本
+- 安装 OpenClaw 最新版本
+- 进入配置向导
+
+---
+
+### ⚠️ 踩坑 4：npm 安装超时
+
+**现象：**
+运行安装脚本后，界面一直卡在 `Installing OpenClaw` 毫无动静。
+
+**原因：**
+npm 默认连接海外服务器，国内直连极易丢包或挂起。
+
+**解决方案：**
+1. 按 `Ctrl + C` 强行中断
+2. 切换 npm 为国内淘宝镜像源：
+   ```bash
+   npm config set registry https://registry.npmmirror.com
+   ```
+3. 清理缓存：
+   ```bash
+   npm cache clean --force
+   ```
+4. 重新运行安装脚本：
+   ```bash
+   curl -fsSL https://openclaw.ai/install.sh | bash
+   ```
+
+---
+
+### ⚠️ 踩坑 5：权限不足错误
+
+**现象：**
+```
+Error: EACCES: permission denied
+```
+
+**解决方案：**
+1. 在用户目录下安装（不需要 sudo）
+2. 或使用 sudo 安装：
+   ```bash
+   sudo npm install -g openclaw
+   ```
+
+---
+
+## 第四阶段：核心参数配置
+
+### 启动配置向导
+
+```bash
+# 如果输入 openclaw 提示找不到命令
+source ~/.bashrc
+
+# 启动配置向导
+openclaw configure
+```
+
+### 大模型配置（Model/Auth Provider）
+
+1. 选择 **Custom Provider**
+2. 填写配置：
+   - **API Base URL:** `https://coding.dashscope.aliyuncs.com/v1`
+   - **API Key:** 填入阿里百川 Coding 计划长串密钥
+   - **Model ID:** `qwen3-coder-next` 或 `qwen3.5-plus`
+3. 看到 `Verification successful` 即代表连通成功
+
+### 网关配置（Gateway）
+
+1. **Gateway port:** 保持默认 `18789`
+2. **Gateway bind mode:** 选择 **LAN (All interfaces)** ⭐（关键：允许外部设备访问）
+3. **Gateway auth:** 选择 **Token**
+4. **⚠️ 极度重要：** 屏幕上生成的一长串 **Token** 必须复制并保存下来！
+   - 这是后续飞书机器人等外部应用连接 OpenClaw 的**唯一"钥匙"**
+5. **Tailscale exposure:** 选择 **Off**
+6. 选择 **Continue** 保存并退出
+
+---
+
+### ⚠️ 踩坑 6：配置文件权限问题
+
+**现象：**
+配置向导无法保存配置文件。
+
+**解决方案：**
+```bash
+# 确保配置目录存在
+mkdir -p ~/.openclaw
+
+# 确保有写入权限
+chmod 755 ~/.openclaw
+```
+
+---
+
+### ⚠️ 踩坑 7：Token 未保存问题
+
+**现象：**
+配置完成后找不到 Gateway Token，无法配置飞书机器人。
+
+**解决方案：**
+1. 查看配置文件：
+   ```bash
+   cat ~/.openclaw/openclaw.json
+   ```
+2. 找到 `gateway.token` 字段
+3. **强烈建议：** 将 Token 保存到安全的地方（密码管理器）
+
+---
+
+## 第五阶段：点火启动
+
+### 启动服务
+
+```bash
+openclaw start
+```
+
+服务启动后会显示：
+```
+Gateway running at http://localhost:18789
+Dashboard: http://localhost:18789
+```
+
+### 访问控制台
+
+在 Windows 浏览器中访问：
+```
+http://localhost:18789
+```
+
+---
+
+### ⚠️ 踩坑 8：跨域错误（CORS）
+
+**现象：**
+在 Windows 浏览器输入局域网 IP（如 `http://172.23.238.17:18789`）时，页面飘红提示：
+```
+origin not allowed
+```
+
+**原因：**
+OpenClaw 的安全机制拦截了"陌生"的外部 IP 访问。
+
+**解决方案：**
+利用 WSL 共享本地环回地址的特性：
+1. 把浏览器地址栏里的网址替换为：
+   ```
+   http://localhost:18789
+   ```
+   或
+   ```
+   http://127.0.0.1:18789
+   ```
+2. 刷新页面，即可完美绕过拦截，进入控制台 UI
+
+---
+
+### ⚠️ 踩坑 9：端口被占用
+
+**现象：**
+```
+Error: listen EADDRINUSE: address already in use :::18789
+```
+
+**解决方案：**
+1. 查找占用端口的进程：
+   ```bash
+   lsof -i :18789
+   ```
+2. 杀死占用进程：
+   ```bash
+   kill -9 <PID>
+   ```
+3. 重启服务：
+   ```bash
+   openclaw start
+   ```
+
+---
+
+## 验证安装
+
+### 完整验证流程
+
+```bash
+# 1. 检查 Gateway 状态
+openclaw gateway status
+
+# 2. 健康检查
+openclaw health
+
+# 3. 测试 API 连接
+curl http://localhost:18789/health
+
+# 4. 查看日志
+openclaw daemon logs
+```
+
+### 验证清单
+
+| 检查项 | 预期结果 | 状态 |
+|--------|----------|------|
+| Gateway 状态 | Running | ☐ |
+| 健康检查 | All checks passed | ☐ |
+| API 连接 | `{"status": "ok"}` | ☐ |
+| 模型连接 | Verification successful | ☐ |
+| 浏览器访问 | 控制台正常显示 | ☐ |
+
+---
+
+## 下一步：飞书机器人对接
+
+### 步骤 1：创建飞书应用
+
+1. 访问 https://open.feishu.cn/app
+2. 点击 **"创建应用"** → **"自建应用"**
+3. 填写应用信息：
+   - 应用名称：OpenClaw Assistant
+   - 应用图标：可选
+
+### 步骤 2：获取应用凭证
+
+1. 进入 **"应用凭证"** 页面
+2. 记录：
+   - **App ID** (cli_xxxxxxxxxxxxxxxx)
+   - **App Secret**
+
+### 步骤 3：配置权限
+
+添加以下权限：
+- `im:message` - 发送和读取消息
+- `im:chat` - 访问群组信息
+- `contact:contact` - 读取联系人信息
+
+### 步骤 4：配置 OpenClaw
+
+编辑配置文件 `~/.openclaw/openclaw.json`：
 
 ```json
 {
-  "version": "1.0",
-  "gateway": {
-    "port": 18789,
-    "host": "localhost"
-  },
   "channels": {
     "feishu": {
       "enabled": true,
-      "accounts": {
-        "main": {
-          "appId": "cli_xxxxxxxxxxxxxxxx",
-          "appSecret": "你的 App Secret",
-          "botName": "大管家"
-        }
-      }
-    },
-    "webchat": {
-      "enabled": true
+      "appId": "你的 App ID",
+      "appSecret": "你的 App Secret"
     }
-  },
-  "models": {
-    "primary": "bailian/qwen3.5-plus",
-    "providers": {
-      "bailian": {
-        "apiKey": "你的阿里云百炼 API Key",
-        "enabled": true
-      }
-    }
-  },
-  "workspace": "C:\\Users\\<用户名>\\Desktop\\知识库"
+  }
 }
 ```
 
-### 推荐模型配置（中国大陆）
+### 步骤 5：测试连接
 
-| 用途 | 模型 ID | 提供商 | 说明 |
-|------|--------|--------|------|
-| 主模型 | `bailian/qwen3.5-plus` | 阿里云百炼 | 1M 上下文，性价比高 |
-| 代码 | `bailian/qwen3-coder-plus` | 阿里云百炼 | 代码专用模型 |
-| 推理 | `bailian/qwen3-max-2026-01-23` | 阿里云百炼 | 最强推理能力 |
-| 创意 | `bailian/MiniMax-M2.5` | 阿里云百炼 | 创意生成 |
-
-**获取 API Key：**
-1. 访问 https://bailian.console.aliyun.com/
-2. 注册/登录阿里云账号
-3. 开通百炼服务
-4. 创建 API Key
+1. 在飞书中添加机器人
+2. 发送测试消息：`你好！你是谁？`
+3. 等待回复
 
 ---
 
-## 启动与验证
+## 常见问题 FAQ
 
-### 启动 Gateway
+<details>
+<summary><strong>Q1: WSL 安装后找不到 Ubuntu？</strong></summary>
 
+**A:** 在 Windows 开始菜单搜索 "Ubuntu" 或 "WSL"，或运行：
 ```powershell
-cd C:\Users\<用户名>\.openclaw
-openclaw gateway
+wsl -l -v
 ```
+</details>
 
-### 验证服务
+<details>
+<summary><strong>Q2: Node.js 安装失败？</strong></summary>
 
-**方式 1：浏览器访问**
-
-打开浏览器访问：http://localhost:18789
-
-**方式 2：命令行验证**
-
-```powershell
-curl http://localhost:18789/health
+**A:** 检查网络连接，或手动下载安装包：
+```bash
+curl -fsSL https://nodejs.org/dist/v22.11.0/node-v22.11.0-linux-x64.tar.xz | tar -xJ
 ```
+</details>
 
-应返回：
-```json
-{"status": "ok", "version": "2026.3.2"}
+<details>
+<summary><strong>Q3: OpenClaw 安装脚本报错？</strong></summary>
+
+**A:** 切换 npm 镜像源后重试：
+```bash
+npm config set registry https://registry.npmmirror.com
+npm cache clean --force
+curl -fsSL https://openclaw.ai/install.sh | bash
 ```
+</details>
 
-**方式 3：查看日志**
+<details>
+<summary><strong>Q4: Gateway 启动后无法访问？</strong></summary>
 
-```powershell
-Get-Content C:\Users\<用户名>\.openclaw\logs\gateway.log -Tail 50 -Wait
+**A:** 使用 `localhost` 访问，不要用局域网 IP：
 ```
+http://localhost:18789
+```
+</details>
 
-### 停止服务
+<details>
+<summary><strong>Q5: 飞书机器人不回复？</strong></summary>
 
-在运行 Gateway 的 PowerShell 窗口按 `Ctrl + C`
+**A:** 检查：
+1. App ID 和 App Secret 是否正确
+2. 权限是否已配置
+3. 机器人是否已添加到聊天
+4. Gateway Token 是否已保存
+</details>
+
+<details>
+<summary><strong>Q6: 如何重新配置？</strong></summary>
+
+**A:** 运行配置向导：
+```bash
+openclaw configure
+```
+</details>
 
 ---
 
-## 常见问题
+## 附录：完整命令清单
 
-### 问题 1：Gateway 启动失败
-
-**错误信息：** `Error: listen EADDRINUSE: address already in use :::18789`
-
-**原因：** 端口 18789 已被占用
-
-**解决方案：**
+### PowerShell 命令（Windows）
 
 ```powershell
-# 查找占用端口的进程
-netstat -ano | findstr :18789
+# 安装 WSL
+wsl --install
 
-# 杀死进程（替换 PID 为实际进程 ID）
-taskkill /F /PID <PID>
+# 查看已安装的 WSL 发行版
+wsl -l -v
 
-# 或修改配置文件使用其他端口
+# 以管理员身份打开 PowerShell
+Win + X → A
+
+# 安装 Windows Terminal
+winget install Microsoft.WindowsTerminal
 ```
 
-### 问题 2：飞书机器人不回复
+### Bash 命令（WSL）
 
-**检查清单：**
+```bash
+# 更新软件源
+sudo apt update
 
-1. ✅ 飞书应用已发布
-2. ✅ 事件订阅已配置（im.message.receive_v1）
-3. ✅ App ID 和 App Secret 正确
-4. ✅ 机器人已添加到聊天
-5. ✅ Gateway 日志显示 WebSocket 连接成功
+# 安装基础工具
+sudo apt install curl git -y
 
-**调试命令：**
+# 安装 Node.js v22
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt install -y nodejs
 
-```powershell
-Get-Content C:\Users\<用户名>\.openclaw\logs\gateway.log | Select-String "feishu"
-```
-
-### 问题 3：npm 安装失败
-
-**错误信息：** `npm ERR! code EACCES`
-
-**解决方案：**
-
-```powershell
-# 以管理员身份运行 PowerShell
-npm install -g openclaw --force
-```
-
-### 问题 4：模型 API 调用失败
-
-**检查清单：**
-
-1. ✅ API Key 正确且未过期
-2. ✅ 账户余额充足
-3. ✅ 网络连接正常
-4. ✅ 模型 ID 拼写正确
-
-**测试命令：**
-
-```powershell
-curl -H "Authorization: Bearer 你的 API Key" https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation
-```
-
-### 问题 5：PowerShell 执行策略限制
-
-**错误信息：** `cannot be loaded because running scripts is disabled on this system`
-
-**解决方案：**
-
-```powershell
-# 以管理员身份运行 PowerShell
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-
-# 确认更改
-Y
-```
-
----
-
-## PowerShell 一键安装脚本
-
-创建文件 `install-openclaw.ps1`：
-
-```powershell
-# OpenClaw Windows 一键安装脚本
-# 使用方法：以管理员身份运行 PowerShell，然后执行 .\install-openclaw.ps1
-
-Write-Host "======================================" -ForegroundColor Cyan
-Write-Host "  OpenClaw Windows 安装脚本" -ForegroundColor Cyan
-Write-Host "======================================" -ForegroundColor Cyan
-Write-Host ""
-
-# 检查 Node.js
-Write-Host "[1/5] 检查 Node.js..." -ForegroundColor Yellow
-if (Get-Command node -ErrorAction SilentlyContinue) {
-    $nodeVersion = node --version
-    Write-Host "  ✓ Node.js 已安装：$nodeVersion" -ForegroundColor Green
-} else {
-    Write-Host "  ✗ Node.js 未安装，请先安装 Node.js LTS" -ForegroundColor Red
-    Write-Host "  下载地址：https://nodejs.org/" -ForegroundColor Yellow
-    exit 1
-}
-
-# 检查 Git
-Write-Host "[2/5] 检查 Git..." -ForegroundColor Yellow
-if (Get-Command git -ErrorAction SilentlyContinue) {
-    $gitVersion = git --version
-    Write-Host "  ✓ Git 已安装：$gitVersion" -ForegroundColor Green
-} else {
-    Write-Host "  ✗ Git 未安装，请先安装 Git" -ForegroundColor Red
-    Write-Host "  下载地址：https://git-scm.com/download/win" -ForegroundColor Yellow
-    exit 1
-}
+# 切换 npm 镜像
+npm config set registry https://registry.npmmirror.com
+npm cache clean --force
 
 # 安装 OpenClaw
-Write-Host "[3/5] 安装 OpenClaw..." -ForegroundColor Yellow
-npm install -g openclaw
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "  ✓ OpenClaw 安装成功" -ForegroundColor Green
-} else {
-    Write-Host "  ✗ OpenClaw 安装失败" -ForegroundColor Red
-    exit 1
-}
+curl -fsSL https://openclaw.ai/install.sh | bash
 
-# 创建配置目录
-Write-Host "[4/5] 创建配置目录..." -ForegroundColor Yellow
-$openclawDir = "$env:USERPROFILE\.openclaw"
-if (-not (Test-Path $openclawDir)) {
-    New-Item -ItemType Directory -Path $openclawDir | Out-Null
-    Write-Host "  ✓ 配置目录已创建：$openclawDir" -ForegroundColor Green
-} else {
-    Write-Host "  ✓ 配置目录已存在" -ForegroundColor Green
-}
+# 刷新环境变量
+source ~/.bashrc
 
-# 初始化配置
-Write-Host "[5/5] 初始化配置..." -ForegroundColor Yellow
-openclaw init
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "  ✓ 配置初始化完成" -ForegroundColor Green
-} else {
-    Write-Host "  ⚠ 配置初始化失败，可手动创建配置文件" -ForegroundColor Yellow
-}
+# 启动配置向导
+openclaw configure
 
-Write-Host ""
-Write-Host "======================================" -ForegroundColor Cyan
-Write-Host "  安装完成！" -ForegroundColor Green
-Write-Host "======================================" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "下一步：" -ForegroundColor Yellow
-Write-Host "1. 编辑配置文件：$openclawDir\openclaw.json" -ForegroundColor White
-Write-Host "2. 配置飞书/Telegram 凭证" -ForegroundColor White
-Write-Host "3. 配置模型 API Key" -ForegroundColor White
-Write-Host "4. 启动服务：openclaw gateway" -ForegroundColor White
-Write-Host ""
-```
+# 启动服务
+openclaw start
 
-**使用方法：**
+# 查看状态
+openclaw gateway status
+openclaw health
 
-```powershell
-# 1. 下载脚本
-# 保存为 install-openclaw.ps1
+# 查看日志
+openclaw daemon logs
 
-# 2. 以管理员身份运行 PowerShell
-# 3. 执行脚本
-.\install-openclaw.ps1
-```
-
----
-
-## 附录：目录结构
-
-```
-C:\Users\<用户名>\.openclaw\
-├── openclaw.json           # 主配置文件
-├── .env                    # 环境变量（API Keys）
-├── logs\
-│   └── gateway.log        # Gateway 日志
-├── workspace\             # 工作空间
-│   ├── SOUL.md           # Agent 身份定义
-│   ├── AGENTS.md         # Agent 配置
-│   ├── MEMORY.md         # 长期记忆
-│   └── skills\           # 已安装技能
-└── cron\
-    └── jobs.json         # 定时任务配置
+# 重启服务
+openclaw daemon restart
 ```
 
 ---
@@ -403,9 +570,9 @@ C:\Users\<用户名>\.openclaw\
 | OpenClaw GitHub | https://github.com/openclaw/openclaw |
 | 飞书开放平台 | https://open.feishu.cn |
 | 阿里云百炼 | https://bailian.console.aliyun.com |
-| Node.js 下载 | https://nodejs.org |
-| Git 下载 | https://git-scm.com/download/win |
+| NodeSource | https://deb.nodesource.com/ |
+| WSL 官方文档 | https://docs.microsoft.com/zh-cn/windows/wsl/ |
 
 ---
 
-**工程师 🔧** | 文档版本：v1.0 | 最后更新：2026-03-09
+**大管家 🦞** | 文档版本：v2.0 | 最后更新：2026-03-11
