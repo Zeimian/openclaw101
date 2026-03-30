@@ -139,6 +139,96 @@ https://github.com/VoltAgent/awesome-openclaw-skills
 **10. PDF Parser（markitdown）— 文档解析**
 把 PDF/Word/PPT 转成文本让 AI 秒读并总结。收到几十页材料时非常省命。
 
+## 🛠️ 完整技能清单（45 个已安装 Skills）
+
+以下是当前系统已安装的 45 个 Skills，按功能分类展示：
+
+### 🔧 企业微信相关（4 个）
+- **wecom-core** — 企业微信核心功能模块，提供基础接口和认证管理
+- **wecom-doc** — 企业微信文档管理，支持文档创建、编辑和共享
+- **wecom-group** — 企业微信群组管理，支持群聊创建、成员管理和消息发送
+- **wecom-wedrive** — 企业微信云盘集成，提供文件存储和同步服务
+
+### 🔍 搜索与内容（9 个）
+- **tavily-search** — 高质量网络搜索，提供准确的信息检索和摘要
+- **web-search** — 通用网页搜索功能，支持多搜索引擎集成
+- **wechat-article-extractor** — 微信公众号文章内容提取和解析
+- **wechat-article-search** — 微信公众号文章搜索和发现
+- **wechat-article-writer** — 微信公众号文章创作和优化
+- **wechat-converter** — 微信内容格式转换和适配
+- **wechat-title-optimizer** — 微信文章标题优化和 A/B 测试
+- **x-tweet-fetcher** — Twitter/X 内容抓取和分析
+- **xiaohongshu** — 小红书内容搜索和分析
+
+### 📰 新闻与热点（5 个）
+- **hot-topics** — 实时热点话题追踪和趋势分析
+- **juejin-article-trends** — 掘金技术文章趋势分析和推荐
+- **opennews** — 开源新闻聚合和个性化推荐
+- **toutiao-news-trends** — 今日头条新闻趋势分析
+- **media-downloader** — 多媒体内容下载和归档
+
+### 💼 商业与竞品（5 个）
+- **competitive-intelligence** — 竞争情报收集和分析
+- **competitor-alternatives** — 竞品替代方案研究和对比
+- **competitor-analysis** — 深度竞品分析和策略制定
+- **competitor-teardown** — 竞品功能拆解和优化建议
+- **marketing-psychology** — 营销心理学分析和策略
+
+### 🤖 Agent 与自动化（4 个）
+- **ai-automation-workflows** — AI 自动化工作流设计和执行
+- **capability-evolver** — AI 能力自进化和优化
+- **proactive-agent** — 主动服务型 AI 代理
+- **self-improving-agent** — 自我学习和改进的 AI 代理
+
+### 🛠️ 开发与工具（10 个）
+- **find-skills** — 技能发现和推荐系统
+- **github** — GitHub 集成，支持代码仓库管理、PR 操作等
+- **gitops-workflow** — GitOps 工作流自动化
+- **gog** — Google Workspace 集成（Gmail、Calendar、Drive 等）
+- **kaggle** — Kaggle 数据科学竞赛和学习平台集成
+- **shadcn-ui** — Shadcn UI 组件库集成和开发支持
+- **skill-vetter** — 技能审核和质量评估
+- **trading212-api** — Trading 212 投资平台 API 集成
+- **utility-pro** — 通用工具增强包
+- **vercel-react-best-practices** — Vercel React 最佳实践指南
+
+### 📁 文件与管理（2 个）
+- **file-manager** — 文件管理系统，支持多平台文件操作
+- **council** — 决策咨询和建议系统
+
+### 🎨 设计与内容（5 个）
+- **content-strategy** — 内容策略规划和执行
+- **copy-editing** — 文案编辑和优化
+- **test-gstack-translation** — GStack 到 OpenClaw 翻译测试
+- **token-efficiency** — Token 使用效率优化
+- **web-design-guidelines** — 网页设计规范和最佳实践
+
+## 🔧 一键安装命令
+
+你可以通过以下方式快速安装这些技能：
+
+### 批量安装脚本（可选）
+```bash
+# 安装所有技能的快捷命令
+clawdhub install wecom-core wecom-doc wecom-group wecom-wedrive tavily-search web-search wechat-article-extractor wechat-article-search wechat-article-writer wechat-converter wechat-title-optimizer x-tweet-fetcher xiaohongshu hot-topics juejin-article-trends opennews toutiao-news-trends media-downloader competitive-intelligence competitor-alternatives competitor-analysis competitor-teardown marketing-psychology ai-automation-workflows capability-evolver proactive-agent self-improving-agent find-skills github gitops-workflow gog kaggle shadcn-ui skill-vetter trading212-api utility-pro vercel-react-best-practices file-manager council content-strategy copy-editing test-gstack-translation token-efficiency web-design-guidelines
+```
+
+### 单个安装示例
+```bash
+# 安装单个技能
+clawdhub install tavily-search
+
+# 安装特定类别的技能
+clawdhub install wecom-core wecom-doc wecom-group wecom-wedrive  # 企业微信相关
+clawdhub install tavily-search web-search wechat-article-extractor wechat-article-search wechat-article-writer wechat-converter wechat-title-optimizer x-tweet-fetcher xiaohongshu  # 搜索与内容
+clawdhub install hot-topics juejin-article-trends opennews toutiao-news-trends media-downloader  # 新闻与热点
+clawdhub install competitive-intelligence competitor-alternatives competitor-analysis competitor-teardown marketing-psychology  # 商业与竞品
+clawdhub install ai-automation-workflows capability-evolver proactive-agent self-improving-agent  # Agent 与自动化
+clawdhub install find-skills github gitops-workflow gog kaggle shadcn-ui skill-vetter trading212-api utility-pro vercel-react-best-practices  # 开发与工具
+clawdhub install file-manager council  # 文件与管理
+clawdhub install content-strategy copy-editing test-gstack-translation token-efficiency web-design-guidelines  # 设计与内容
+```
+
 ---
 
 ## 技能组合拳：1 + 1 > 2

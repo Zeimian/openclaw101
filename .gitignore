@@ -31,3 +31,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Binary installer files in downloads
+public/downloads/*.exe
+public/downloads/*.zip
