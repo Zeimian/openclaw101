@@ -19,7 +19,7 @@ export default async function GuidePage({ params }: Props) {
   const { slug } = await params;
   
   // Validate slug
-  const validSlugs = ['windows-deployment', 'macos-deployment'];
+  const validSlugs = ['windows-deployment', 'macos-deployment', 'wecom-integration'];
   if (!validSlugs.includes(slug)) {
     notFound();
   }
