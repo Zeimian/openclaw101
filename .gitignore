@@ -32,6 +32,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Binary installer files in downloads
-public/downloads/*.exe
-public/downloads/*.zip
+# Binary installer files in downloads (commented - needed for Vercel)
+# public/downloads/*.exe
+# public/downloads/*.zip
