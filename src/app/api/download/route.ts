@@ -67,6 +67,32 @@ async function downloadFromUrl(url: string, filename: string): Promise<string> {
   });
 }
 
-// 从裁判文书网 API 获取判决书内容
-async function fetchFromCourt(docId: string): Promise<{ content: string; filename: string }> {
-  // 裁判文书网 
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const url = searchParams.get('url');
+  const filename = searchParams.get('filename');
+
+  if (!url) {
+    return NextResponse.json({ error: '缺少 url 参数' }, { status: 400 });
+  }
+
+  const fname = filename || `download_${Date.now()}`;
+
+  try {
+    const filePath = await downloadFromUrl(url, fname);
+    const stats = fs.statSync(filePath);
+    
+    return NextResponse.json({
+      success: true,
+      filename: fname,
+      path: `/downloads/${fname}`,
+      size: `${(stats.size / 1024).toFixed(2)} KB`,
+      message: `文件已成功保存到 /downloads/${fname}`,
+    });
+  } catch (error: any) {
+    return NextResponse.json({ 
+      error: '下载失败', 
+      message: error.message 
+    }, { status: 500 });
+  }
+} 

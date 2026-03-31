@@ -82,13 +82,17 @@ async function executeDownloadFile(url: string, filename?: string): Promise<stri
     const protocol = url.startsWith('https') ? https : http;
     const file = fs.createWriteStream(filePath);
 
+    const handleRedirect = (redirectUrl: string) => {
+      file.close();
+      executeDownloadFile(redirectUrl, fname).then(() => resolve()).catch(reject);
+    };
+
     const request = protocol.get(url, (response) => {
       // 处理重定向
       if (response.statusCode === 301 || response.statusCode === 302) {
         const redirectUrl = response.headers.location;
         if (redirectUrl) {
-          file.close();
-          executeDownloadFile(redirectUrl, fname).then(resolve).catch(reject);
+          handleRedirect(redirectUrl);
           return;
         }
       }
