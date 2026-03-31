@@ -196,6 +196,41 @@ async function executeTool(name: string, input: Record<string, unknown>): Promis
   }
 }
 
+
+// ─── 模拟 LLM（无 API Key 时） ────────────────────────────────────────
+function simulateLLM(
+  messages: Array<{ role: string; content: string }>,
+  tools: Tool[]
+): { content: string; tool_calls?: Array<{ name: string; arguments: Record<string, unknown> }> } {
+  const lastMessage = messages[messages.length - 1];
+  const userContent = lastMessage?.content || '';
+
+  if (userContent.includes('下载') || userContent.includes('download')) {
+    return {
+      content: '我来帮你下载文件。',
+      tool_calls: [{ name: 'download_file', arguments: { url: 'https://example.com/file.pdf' } }],
+    };
+  }
+
+  if (userContent.includes('网页') || userContent.includes('fetch')) {
+    return {
+      content: '我来获取网页内容。',
+      tool_calls: [{ name: 'fetch_webpage', arguments: { url: 'https://example.com' } }],
+    };
+  }
+
+  if (userContent.includes('列表') || userContent.includes('list')) {
+    return {
+      content: '我来列出已下载的文件。',
+      tool_calls: [{ name: 'list_downloads', arguments: {} }],
+    };
+  }
+
+  return {
+    content: '你好！我是一个 AI 助手，可以帮你下载文件、获取网页内容或列出已下载的文件。',
+  };
+}
+
 // ─── 调用大模型（带工具） ────────────────────────────────────────
 async function callLLM(
   messages: Array<{ role: string; content: string }>,
