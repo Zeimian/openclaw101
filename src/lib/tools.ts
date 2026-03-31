@@ -96,4 +96,90 @@ async function downloadFile(
   filename?: string
 ): Promise<string> {
   // Validate URL
-  
+    let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(url);
+  } catch {
+    throw new Error(`Invalid URL: ${url}`);
+  }
+
+  // Determine filename
+  const fname = filename || path.basename(parsedUrl.pathname) || `download_${Date.now()}`;
+  const filePath = path.join(DOWNLOADS_DIR, fname);
+  const file = fs.createWriteStream(filePath);
+
+  return new Promise((resolve, reject) => {
+    const protocol = url.startsWith('https') ? https : http;
+
+    const handleRedirect = (redirectUrl: string) => {
+      file.close();
+      downloadFile(redirectUrl, fname).then(resolve).catch(reject);
+    };
+
+    const request = protocol.get(url, (response) => {
+      if (response.statusCode === 301 || response.statusCode === 302) {
+        const redirectUrl = response.headers.location;
+        if (redirectUrl) {
+          handleRedirect(redirectUrl);
+          return;
+        }
+      }
+
+      if (response.statusCode !== 200) {
+        file.close();
+        fs.unlink(filePath, () => {});
+        reject(new Error(`HTTP ${response.statusCode}: Failed to download ${url}`));
+        return;
+      }
+
+      response.pipe(file);
+      file.on('finish', () => {
+        file.close();
+        resolve(`/downloads/${fname}`);
+      });
+    });
+
+    request.on('error', (err) => {
+      file.close();
+      fs.unlink(filePath, () => {});
+      reject(err);
+    });
+
+    request.setTimeout(30000, () => {
+      request.destroy();
+      reject(new Error('Download timed out'));
+    });
+  });
+}
+
+/** List all files in the downloads folder */
+function listDownloads(): string {
+  if (!fs.existsSync(DOWNLOADS_DIR)) {
+    return JSON.stringify({ files: [], message: 'Downloads folder is empty' });
+  }
+
+  const files = fs.readdirSync(DOWNLOADS_DIR).map((fname) => {
+    const fpath = path.join(DOWNLOADS_DIR, fname);
+    const stats = fs.statSync(fpath);
+    return {
+      name: fname,
+      path: `/downloads/${fname}`,
+      size: `${(stats.size / 1024).toFixed(2)} KB`,
+      modified: stats.mtime.toISOString(),
+    };
+  });
+
+  return JSON.stringify({ files, total: files.length });
+}
+
+/** Read the content of a downloaded text file */
+function readDownloadedFile(filename: string): string {
+  const filePath = path.join(DOWNLOADS_DIR, filename);
+
+  if (!fs.existsSync(filePath)) {
+    throw new Error(`File not found: ${filename}`);
+  }
+
+  const content = fs.readFileSync(filePath, 'utf-8');
+  return content.slice(0, 5000);
+}
