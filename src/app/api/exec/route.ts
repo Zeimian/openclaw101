@@ -208,4 +208,117 @@ async function callLLM(
   if (!apiKey) {
     // 模拟模式（无API Key时）
     return simulateLLM(messages, tools);
-  
+    }
+
+  // 实际调用 LLM API（简化版本）
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages,
+        tools: tools.map(t => ({ type: 'function', function: t })),
+        tool_choice: 'auto',
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`LLM API 错误：${response.status}`);
+    }
+
+    const data = await response.json();
+    const choice = data.choices[0];
+    const message = choice.message;
+
+    return {
+      content: message.content || '',
+      tool_calls: message.tool_calls?.map((tc: any) => ({
+        name: tc.function.name,
+        arguments: JSON.parse(tc.function.arguments),
+      })),
+    };
+  } catch (error: any) {
+    console.error('LLM 调用失败:', error);
+    return {
+      content: `LLM 调用失败：${error.message}`,
+    };
+  }
+}
+
+// ─── Agent 执行循环 ──────────────────────────────────────────────
+async function runAgentLoop(
+  messages: Array<{ role: string; content: string }>,
+  tools: Tool[],
+  maxSteps = 5
+): Promise<AgentStep[]> {
+  const steps: AgentStep[] = [];
+  const conversation = [...messages];
+
+  for (let step = 0; step < maxSteps; step++) {
+    const llmResult = await callLLM(conversation, tools);
+    
+    steps.push({ type: 'thought', content: llmResult.content });
+
+    if (!llmResult.tool_calls || llmResult.tool_calls.length === 0) {
+      steps.push({ type: 'final_answer', content: llmResult.content });
+      break;
+    }
+
+    for (const toolCall of llmResult.tool_calls) {
+      steps.push({
+        type: 'tool_call',
+        content: `调用工具：${toolCall.name}`,
+        tool: toolCall.name,
+        input: toolCall.arguments,
+      });
+
+      try {
+        const result = await executeTool(toolCall.name, toolCall.arguments);
+        steps.push({
+          type: 'tool_result',
+          content: '工具执行成功',
+          tool: toolCall.name,
+          output: result,
+        });
+
+        conversation.push({ role: 'assistant', content: llmResult.content });
+        conversation.push({ role: 'tool', content: result } as any);
+      } catch (error: any) {
+        steps.push({
+          type: 'tool_result',
+          content: `工具执行失败：${error.message}`,
+          tool: toolCall.name,
+          output: error.message,
+        });
+      }
+    }
+  }
+
+  return steps;
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const { messages = [] } = body;
+
+    const steps = await runAgentLoop(messages, TOOLS);
+    const finalAnswer = steps.find(s => s.type === 'final_answer');
+
+    return Response.json({
+      success: true,
+      steps,
+      answer: finalAnswer?.content || '未能生成答案',
+    });
+  } catch (error: any) {
+    console.error('执行失败:', error);
+    return Response.json({
+      success: false,
+      error: error.message,
+    }, { status: 500 });
+  }
+}
